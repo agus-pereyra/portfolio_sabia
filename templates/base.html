@@ -1,0 +1,83 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+</head>
+<body>
+    <div id="side-menu" class="side-nav-right">
+        <div class="side-nav-header">
+            <span class="close-btn" onclick="closeNav()">&times;</span>
+        </div>
+        <div class="side-nav-content">
+            <h3>Colecciones</h3>
+            {% for col in collections_all %}
+                <a href="{% url 'collection_detail' col.slug %}">
+                    {{ col.title }} <span class="nav-year">— {{ col.captured_at|date:"Y" }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <!-- El Logo o nombre del fotógrafo -->
+        <a href="{% url 'home' %}" class="brand">Francesca Sabia</a>
+
+        <!-- Menú de Navegación -->
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="javascript:void(0)" onclick="openNav()">Colecciones</a>
+            <a href="/contacto">Contacto</a>
+            <a href="/sobre-mi">Sobre mí</a>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <!-- Redes Sociales -->
+            <div class="footer-social">
+                <a href="https://www.instagram.com/chasabia/" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://x.com/migrainechacha" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="mailto:hola@tuweb.com"><i class="far fa-envelope"></i></a>
+                <a href="https://wa.me/5493413927660?text=Hola!%20Vi%20tu%20portfolio..." target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-info">
+                <p>&copy; {{ now|date:"Y" }} FRANCESCA SABIA &middot; TODOS LOS DERECHOS RESERVADOS</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- script del side-menu -->
+<script>
+function openNav() {
+    // Definimos el ancho que queremos que ocupe al abrirse
+    document.getElementById("side-menu").style.width = "350px";
+}
+
+function closeNav() {
+    // Volvemos a ancho 0 para esconderlo
+    document.getElementById("side-menu").style.width = "0";
+}
+
+// Cerrar si se hace click fuera del menú (en el resto de la pantalla)
+document.addEventListener('click', function(event) {
+    var menu = document.getElementById("side-menu");
+    var btn = document.querySelector('a[onclick="openNav()"]');
+    
+    // Si el click no es en el menú ni en el botón que lo abre, cerramos
+    if (!menu.contains(event.target) && event.target !== btn) {
+        closeNav();
+    }
+});
+</script>

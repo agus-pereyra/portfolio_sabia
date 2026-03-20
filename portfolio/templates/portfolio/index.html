@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Francesca Sabia Portfolio{% endblock %}
+
+{% block content %}
+    <header class="home-intro">
+        <h1>Trabajos ~ destacados</h1>
+        <p>Sesiones Seleccionadas</p>
+    </header>
+
+    <!-- Lista de Colecciones -->
+    <section class="collections-container">
+        {% for col in collections %}
+            <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
+                <div class="collection-image-wrapper">
+                    {% with first_pic=col.pictures.first %}
+                        {% if first_pic %}
+                            <img src="{{ first_pic.image.url }}" alt="{{ col.title }}">
+                        {% else %}
+                            <div style="height: 100%; width: 300px; background: #f0f0f0;"></div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                
+                <div class="collection-info">
+                    <h2>{{ col.title }}</h2>
+                    <div class="collection-meta">
+                        {% if col.captured_at %}
+                            {{ col.captured_at|date:"M Y"|upper }} &nbsp;·&nbsp; 
+                        {% endif %}
+                        {{ col.get_photos_count }} Fotos &nbsp;·&nbsp; {{ col.get_videos_count }} Videos
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p style="grid-column: 1/-1; text-align: center; padding: 50px;">Próximamente nuevas sesiones destacadas.</p>
+        {% endfor %}
+    </section>
+{% endblock %}

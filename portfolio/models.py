@@ -1,6 +1,5 @@
 from django.db import models
-from PIL import Image
-
+from django.utils.text import slugify
 
 class Collaborator(models.Model):
     first_name = models.CharField(max_length=20, verbose_name='Nombre/s')
@@ -19,23 +18,42 @@ class Collaborator(models.Model):
         return f'{self.first_name} {self.last_name}, {self.role}'
     
     class Meta:
-        verbose_name = 'Colaboradora'
+        verbose_name = 'Colaborador/a'
         verbose_name_plural = 'Colaboradores'
 
 class Collection(models.Model):
     title = models.CharField(max_length=40, verbose_name='Título')
+    slug = models.SlugField(unique=True, blank=True, null=True)
+
     description = models.TextField(blank=True, null=True, verbose_name='Descripción')
     collaborators = models.ManyToManyField(Collaborator, blank=True, related_name='collections')
 
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='Fecha de Creación')
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='Fecha de publicación')
+    captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
+
+    is_featured = models.BooleanField(verbose_name='Destacar', default=False, help_text='(Mostrar en Home)')
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def get_photos_count(self):
+        return self.pictures.count()
+    
+    def get_videos_count(self):
+        return self.videos.count()
+
+    def get_total_items(self):
+        return self.get_photos_count() + self.get_videos_count
 
     def __str__(self):
         return f'{self.title}'
-
+    
     class Meta:
         verbose_name = 'Colección'
         verbose_name_plural = 'Colecciones'
-        ordering = ['-created_at']
+        ordering = ['-captured_at']
 
 class Picture(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Título')
@@ -49,8 +67,8 @@ class Picture(models.Model):
     width = models.IntegerField(editable=False, null=True)
     height = models.IntegerField(editable=False, null=True)
 
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Subida')
-    captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de Captura')
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
+    captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
 
     def __str__(self):
         if self.title and self.collection:
@@ -64,7 +82,7 @@ class Picture(models.Model):
     class Meta:
         verbose_name = 'Foto'
         verbose_name_plural = 'Fotos'
-        ordering = ['-uploaded_at']
+        ordering = ['-captured_at']
 
 class Video(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Título')
@@ -74,8 +92,8 @@ class Video(models.Model):
     
     duration = models.DurationField(null=True, blank=True, help_text='HH:MM:SS', verbose_name='Duración')
 
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Subida')
-    captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de Captura')
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
+    captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
 
     def __str__(self):
         if self.title:
@@ -85,4 +103,4 @@ class Video(models.Model):
     class Meta:
         verbose_name = 'Video'
         verbose_name_plural = 'Videos'
-        ordering = ['-uploaded_at']
+        ordering = ['-captured_at']
