@@ -65,14 +65,14 @@ h1, h2, .brand {
 
 .home-intro {
     text-align: center;
-    padding: 60px 0;
+    padding-top: 60px;
 }
 
 .home-intro h1 {
     font-size: 2.8rem;
     letter-spacing: 8px;
     text-transform: uppercase;
-    margin-bottom: 15px;
+    margin-bottom: 0px;
 }
 
 .home-intro p {
@@ -233,6 +233,23 @@ h1, h2, .brand {
 .photo-item:hover img {
     transform: scale(1.03);
     opacity: 0.9;
+}
+
+.video-item {
+    background-color: #000;
+    overflow: hidden;
+}
+
+.video-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+}
+
+.video-item:hover video {
+    transform: scale(1.02);
+    opacity: 0.95;
 }
 
 @media (max-width: 1000px) {
@@ -725,4 +742,209 @@ h1, h2, .brand {
         gap: 20px;
         margin-top: 30px;
     }
+}
+
+/* --- HOME COLLECTIONS SLIDER (ROBUSTO) --- */
+
+.collections-slider {
+    width: 100%;
+    padding: 80px 0 20px 0 !important;
+    overflow: hidden;
+    position: relative;
+    display: block; /* Aseguramos que sea bloque */
+}
+
+/* Forzamos a que el wrapper se comporte estrictamente como pide Swiper */
+.collections-slider .swiper-wrapper {
+    display: flex !important;
+    align-items: stretch !important; /* Para que todas midan igual de alto */
+    box-sizing: content-box !important;
+}
+
+/* Reglas estrictas para cada carta */
+.collections-slider .swiper-slide {
+    width: 450px !important; 
+    flex-shrink: 0 !important; /* CRÍTICO: Evita que el navegador comprima las fotos, rompiendo el bucle */
+    height: auto;
+    display: block !important; 
+    opacity: 0.3; 
+    transform: scale(0.85); 
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+    box-sizing: border-box;
+}
+
+/* Solo la del medio brilla y crece */
+.collections-slider .swiper-slide-active {
+    opacity: 1 !important;
+    transform: scale(1.05) !important;
+    z-index: 10;
+}
+
+/* Ajuste del contenedor de la imagen */
+.collections-slider .collection-image-wrapper {
+    width: 100%;
+    height: 600px;
+    background: #f4f4f4;
+    overflow: hidden;
+    transition: box-shadow 0.6s ease;
+    display: block;
+}
+
+.collections-slider .swiper-slide-active .collection-image-wrapper {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.collections-slider .collection-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block; /* Quita el espacio fantasma debajo de la imagen */
+}
+
+/* Quita el comportamiento flex viejo de la tarjeta para evitar choques */
+.collections-slider .collection-card {
+    display: block !important; 
+    text-decoration: none;
+    color: var(--text-color);
+    width: 100%;
+}
+
+/* Flechas */
+.swiper-button-next, 
+.swiper-button-prev {
+    color: var(--text-color) !important;
+    background: rgba(255, 255, 255, 0.9);
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 50;
+    top: 50% !important;
+    transform: translateY(-50%);
+}
+
+.swiper-button-next { right: 4% !important; }
+.swiper-button-prev { left: 4% !important; }
+
+.swiper-button-next:after, 
+.swiper-button-prev:after {
+    font-size: 18px !important;
+}
+
+/* --- ARCHIVE SECTION --- */
+
+.archive-section {
+    padding: 100px 5% 60px;
+}
+
+.archive-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.archive-header h1 {
+    font-family: var(--font-serif);
+    font-size: 3.5rem;
+    letter-spacing: -2px;
+}
+
+.filter-bar {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap; /* Por si en el futuro hay muchos años, que bajen a otra línea */
+}
+
+.filter-bar a {
+    font-family: var(--font-mono);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    padding-bottom: 5px;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.filter-bar a:hover {
+    color: var(--text-color);
+}
+
+.filter-bar a.active {
+    color: var(--text-color);
+    border-bottom: 1px solid var(--text-color);
+}
+
+.archive-empty {
+    text-align: center;
+    width: 100%;
+    grid-column: 1 / -1; /* Fuerza al texto a ocupar todo el ancho si no hay fotos */
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    padding: 40px 0;
+}
+
+.collections-grid {
+    display: grid;
+    /* Reduje el ancho base de 450px a 320px para que entren más columnas */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    /* Reduje el gap de 40px a 15px para eliminar los espacios en blanco gigantes */
+    gap: 15px; 
+    padding: 0 5%;
+    margin-bottom: 100px;
+}
+
+.collections-grid .collection-image-wrapper {
+    height: 350px; /* Un poco más bajitas para que mantengan la proporción */
+    width: 100%;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.collections-grid .collection-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.collections-grid .collection-card:hover img {
+    transform: scale(1.03); /* Un zoom más sutil al pasar el mouse */
+}
+
+/* --- HOME SHOW ALL --- */
+
+.show-all-wrapper {
+    text-align: center;
+    margin-top: -30px; /* Sube un poco para acercarse al slider */
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 20; /* Para que quede por encima de las sombras del slider */
+    padding: 40px 0px;
+}
+
+.show-all-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+}
+
+.show-all-link .arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.show-all-link:hover {
+    color: var(--text-color);
+}
+
+.show-all-link:hover .arrow {
+    transform: translateX(5px); /* Efecto lindo: la flechita se mueve al pasar el mouse */
 }

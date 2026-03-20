@@ -33,13 +33,9 @@ class Collection(models.Model):
 
     is_featured = models.BooleanField(verbose_name='Destacar', default=False, help_text='(Mostrar en Home)')
 
-    cover =  models.ForeignKey(
-        'Picture', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
-        related_name='cover'
-    )
+    cover =  models.ForeignKey('Picture', on_delete=models.SET_NULL, null=True, blank=True, related_name='cover')
+
+    cover_video = models.ForeignKey('Video', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -104,12 +100,14 @@ class Video(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Título')
 
     collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, blank=True, null=True, related_name="videos")
-    video_file = models.FileField(upload_to='portfolio/videos/', verbose_name='Archivo del Video')
+    file = models.FileField(upload_to='portfolio/videos/', verbose_name='Archivo del Video')
     
     duration = models.DurationField(null=True, blank=True, help_text='HH:MM:SS', verbose_name='Duración')
 
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
     captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
+
+    id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True) 
 
     def __str__(self):
         if self.title:

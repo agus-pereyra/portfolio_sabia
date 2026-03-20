@@ -1,24 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Albums{% endblock %}
+{% block title %}Archivo - Francesca Sabia{% endblock %}
 
 {% block content %}
-<section class="archive-section" style="padding: 100px 5% 60px;">
-    <header style="text-align: center; margin-bottom: 60px;">
-        <h1 style="font-family: var(--font-serif); font-size: 3.5rem; letter-spacing: -2px;">Archivo</h1>
+<section class="archive-section">
+    <header class="archive-header">
+        <h1>Archivo</h1>
         
-        <div class="filter-bar" style="margin-top: 40px; display: flex; justify-content: center; gap: 30px;">
+        <div class="filter-bar">
+            <!-- Botón "Todos" -->
             <a href="{% url 'collections_list' %}" 
-               style="font-family: var(--font-mono); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; 
-               color: {% if not active_year %}var(--text-color){% else %}var(--accent-color){% endif %}; 
-               border-bottom: {% if not active_year %}1px solid var(--text-color){% else %}none{% endif %}; 
-               padding-bottom: 5px;">
+               class="{% if not active_year %}active{% endif %}">
                 Todos
             </a>
 
+            <!-- Botones de Años -->
             {% for date in years %}
                 <a href="?year={{ date.year }}" 
-                   style="font-family: var(--font-mono); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: {% if active_year == date.year|stringformat:"s" %}var(--text-color){% else %}var(--accent-color){% endif %}; border-bottom: {% if active_year == date.year|stringformat:"s" %}1px solid var(--text-color){% else %}none{% endif %}; padding-bottom: 5px;">
+                   class="{% if active_year == date.year|stringformat:'s' %}active{% endif %}">
                     {{ date.year }}
                 </a>
             {% endfor %}
@@ -29,7 +28,15 @@
         {% for col in collections %}
             <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
                 <div class="collection-image-wrapper">
-                    <img src="{{ col.cover.image.url }}" alt="{{ col.title }}">
+                    {% if col.cover_video %}
+                        <video autoplay muted loop playsinline width="100%" height="100%" style="object-fit: cover;">
+                            <source src="{{ col.cover_video.file.url }}" type="video/mp4">
+                        </video>
+                    {% elif col.cover %}
+                        <img src="{{ col.cover.image.url }}" alt="{{ col.title }}">
+                    {% else %}
+                        <div style="height: 100%; width: 100%; background: #f4f4f4;"></div>
+                    {% endif %}
                 </div>
                 <div class="collection-info">
                     <h2>{{ col.title }}</h2>
@@ -37,9 +44,7 @@
                 </div>
             </a>
         {% empty %}
-            <p style="text-align: center; width: 100%; font-family: var(--font-sans); color: var(--accent-color);">
-                No hay colecciones disponibles para este año.
-            </p>
+            <p class="archive-empty">No hay colecciones disponibles para este año.</p>
         {% endfor %}
     </div>
 </section>

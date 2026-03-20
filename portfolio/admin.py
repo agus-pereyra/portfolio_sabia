@@ -1,25 +1,9 @@
+from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.text import slugify
-from django import forms
-from django.forms.widgets import ClearableFileInput
 from .models import Collaborator, Collection, Picture, Video
-
-class MultipleFileInput(ClearableFileInput):
-    allow_multiple_selected = True
-
-class MultipleFileField(forms.ImageField):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault("widget", MultipleFileInput())
-        super().__init__(*args, **kwargs)
-
-    def clean(self, data, initial=None):
-        single_file_clean = super().clean
-        if isinstance(data, (list, tuple)):
-            result = [single_file_clean(d, initial) for d in data]
-        else:
-            result = single_file_clean(data, initial)
-        return result
+from .custom_fields import MultipleImageField, MultipleVideoField
 
 class CollectionForm(forms.ModelForm):
     captured_at = forms.DateField(
@@ -28,12 +12,10 @@ class CollectionForm(forms.ModelForm):
         input_formats=['%Y-%m', '%Y-%m-%d']
     )
 
-    upload_multiple = MultipleFileField(
-        label="Subida Masiva (Seleccioná muchas fotos)",
-        required=False,
-        help_text="Arrastrá los archivos aquí para subirlos todos juntos."
-    )
+    upload_multiple_pictures = MultipleImageField(label="Cargar Imágenes", required=False)
 
+    upload_multiple_videos = MultipleVideoField(label="Cargar Videos", required=False)
+    
     class Meta:
         model = Collection
         fields = '__all__'
@@ -94,12 +76,13 @@ class CollectionAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         
-        files = request.FILES.getlist('upload_multiple')
-        if files:
+        
+        photos = request.FILES.getlist('upload_multiple')
+        if photos:
             last_count = obj.pictures.count()
             
             new_pictures = []
-            for i, f in enumerate(files, start=1):
+            for i, f in enumerate(photos, start=1):
                 new_pic = Picture.objects.create(
                     collection=obj, 
                     image=f,
@@ -109,6 +92,23 @@ class CollectionAdmin(admin.ModelAdmin):
             
             if not obj.cover and new_pictures:
                 obj.cover = new_pictures[0]
+                obj.save()
+        
+        videos = request.FILES.getlist('upload_multiple_videos')
+        if videos:
+            last_vid_count = obj.videos.count()
+            
+            new_videos = []
+            for i, v in enumerate(videos, start=1):
+                new_vid = Video.objects.create(
+                    collection=obj,
+                    file=v,
+                    id_collection=f"vid_{last_vid_count + i}_{slugify(obj.title)}"
+                )
+                new_videos.append(new_vid)
+            
+            if not obj.cover_video and new_videos:
+                obj.cover_video = new_videos[0]
                 obj.save()
 
     def get_form(self, request, obj=None, **kwargs):

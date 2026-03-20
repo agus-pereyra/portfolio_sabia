@@ -46,6 +46,15 @@
     </header>
 
     <section class="photo-story-grid">
+        {% for video in collection.videos.all %}
+            <div class="photo-item video-item">
+                <video autoplay muted loop playsinline width="100%" style="display: block;">
+                    <source src="{{ video.file.url }}" type="video/mp4">
+                    Tu navegador no soporta la reproducción de videos.
+                </video>
+            </div>
+        {% endfor %}
+
         {% for pic in collection.pictures.all %}
             <div class="photo-item">
                 <img src="{{ pic.image.url }}" 
