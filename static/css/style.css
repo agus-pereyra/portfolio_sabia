@@ -65,14 +65,14 @@ h1, h2, .brand {
 
 .home-intro {
     text-align: center;
-    padding: 80px 0;
+    padding: 60px 0;
 }
 
 .home-intro h1 {
     font-size: 2.8rem;
     letter-spacing: 8px;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .home-intro p {
@@ -150,21 +150,29 @@ h1, h2, .brand {
     color: var(--accent-color);
     text-transform: uppercase;
     margin-top: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 35px;
     letter-spacing: 1px;
 }
 
 .collection-detail-wrapper {
     max-width: 1600px;
     margin: 0 auto;
-    padding: 0 5%;
+    padding: 0 5%; 
+    position: relative;
 }
 
 .collection-header-info {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     text-align: center;
-    padding: 100px 0;
     max-width: 800px;
-    margin: 0 auto; 
+    margin: 0 auto;
+    min-height: 70vh; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 0; 
 }
 
 .collection-header-info h1 {
@@ -196,10 +204,16 @@ h1, h2, .brand {
 /* PICTURES GRID */
 
 .photo-story-grid {
+    position: relative; 
+    z-index: 10; 
+    background-color: var(--main-bg);     
     display: flex;
-    flex-direction: column; /* Una abajo de la otra */
-    gap: 50px; /* Espacio entre fotos */
+    flex-direction: column;
+    gap: 50px;
     margin-bottom: 150px;
+    padding: 10px;
+    box-shadow: 0 -20px 40px rgba(0,0,0,0.08);
+    border-radius: 15px;
 }
 
 .photo-item {
@@ -219,6 +233,18 @@ h1, h2, .brand {
 .photo-item:hover img {
     transform: scale(1.03);
     opacity: 0.9;
+}
+
+@media (max-width: 1000px) {
+    .collection-header-info {
+        position: relative; 
+        min-height: auto;
+        padding: 60px 0;
+    }
+    .photo-story-grid {
+        padding-top: 20px;
+        box-shadow: none;
+    }
 }
 
 /* FEATURING */
