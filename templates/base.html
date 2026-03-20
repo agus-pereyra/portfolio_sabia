@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>{% block title %}Portfolio{% endblock %}</title>
 </head>
@@ -23,9 +23,10 @@
             </div>
             <div class="side-nav-content">
                 <h3>Albums</h3>
-                {% for col in collections_all %}
+                {% for col in menu_collections %}
                     <a href="{% url 'collection_detail' col.slug %}">
-                        {{ col.title }} <span class="nav-year">— {{ col.captured_at|date:"Y" }}</span>
+                        {{ col.title }} 
+                        <span class="nav-year">{{ col.captured_at|date:"Y" }}</span>
                     </a>
                 {% endfor %}
         </div>
