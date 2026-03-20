@@ -250,11 +250,19 @@ h1, h2, .brand {
 /* FEATURING */
 
 .collection-credits {
-    margin: 40px auto;
+    margin: 20px auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     align-items: center;
+}
+
+.collection-credits h2 {
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    font-size: 0.8rem;
+    letter-spacing: 8px;
+    text-transform: uppercase;
 }
 
 .collab-item {

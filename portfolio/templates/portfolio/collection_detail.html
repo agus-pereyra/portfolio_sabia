@@ -11,13 +11,21 @@
                 <span>{{ collection.captured_at|date:"M Y"|upper }}</span>
             {% endif %}
             <span>·</span>
-            <span>{{ collection.get_photos_count }} FOTOGRAFÍAS</span>
+            {% if collection.get_photos_count > 0 %}
+                <span>{{ collection.get_photos_count }} Fotografía{{ collection.get_photos_count|pluralize:"s" }}</span>
+            {% endif %}
+            {% if collection.get_videos_count > 0 %}
+                <span>{{ collection.get_videos_count }} Video{{ collection.get_videos_count|pluralize:"s" }}</span>
+            {% endif %}
+            
+
         </div>
         
         <h1>{{ collection.title }}</h1>
 
         {% if collection.collaborators.all %}
             <div class="collection-credits">
+                <h2>Featuring</h2>
                 {% for collab in collection.collaborators.all %}
                     <div class="collab-item">
                         <a href="{{ collab.contact }}" target="_blank" class="collab-link">
