@@ -22,13 +22,11 @@
             {% for col in collections %}
                 <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
                     <div class="collection-image-wrapper">
-                        {% with first_pic=col.pictures.first %}
-                            {% if first_pic %}
-                                <img src="{{ first_pic.image.url }}" alt="{{ col.title }}">
+                            {% if col.cover %}
+                                <img src="{{ col.cover.image.url }}" alt="{{ col.title }}">
                             {% else %}
                                 <div style="height: 100%; width: 300px; background: #f0f0f0;"></div>
                             {% endif %}
-                        {% endwith %}
                     </div>
                     
                     <div class="collection-info">

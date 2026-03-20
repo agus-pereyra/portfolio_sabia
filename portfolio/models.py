@@ -33,6 +33,14 @@ class Collection(models.Model):
 
     is_featured = models.BooleanField(verbose_name='Destacar', default=False, help_text='(Mostrar en Home)')
 
+    cover =  models.ForeignKey(
+        'Picture', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='cover'
+    )
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
@@ -69,15 +77,23 @@ class Picture(models.Model):
 
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
     captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
+    
+    id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True) 
+
+    def save(self, *args, **kwargs):
+        if self.collection:
+            self.captured_at = self.collection.captured_at
+        if not self.id_collection:
+            pictures_in_col = Picture.objects.filter(collection=self.collection)
+            current_count = pictures_in_col.count()            
+            self.id_collection = f"{current_count + 1}_{slugify(self.collection.title)}"
+        
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        if self.title and self.collection:
-            return f'{self.title} - "{self.collection}"'
-        elif self.title and not self.collection:
-            return f'{self.title}'
-        elif self.collection and not self.title:
-            return f'Sin título - {self.collection}'
-        return 'Sin título'
+        if self.id_collection:
+            return f'{self.id_collection}'
+        return 'No ID'
         
     class Meta:
         verbose_name = 'Foto'
