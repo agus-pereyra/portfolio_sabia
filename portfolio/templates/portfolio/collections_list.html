@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Albums{% endblock %}
+
+{% block content %}
+<section class="archive-section" style="padding: 100px 5% 60px;">
+    <header style="text-align: center; margin-bottom: 60px;">
+        <h1 style="font-family: var(--font-serif); font-size: 3.5rem; letter-spacing: -2px;">Archivo</h1>
+        
+        <div class="filter-bar" style="margin-top: 40px; display: flex; justify-content: center; gap: 30px;">
+            <a href="{% url 'collections_list' %}" 
+               style="font-family: var(--font-mono); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; 
+               color: {% if not active_year %}var(--text-color){% else %}var(--accent-color){% endif %}; 
+               border-bottom: {% if not active_year %}1px solid var(--text-color){% else %}none{% endif %}; 
+               padding-bottom: 5px;">
+                Todos
+            </a>
+
+            {% for date in years %}
+                <a href="?year={{ date.year }}" 
+                   style="font-family: var(--font-mono); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: {% if active_year == date.year|stringformat:"s" %}var(--text-color){% else %}var(--accent-color){% endif %}; border-bottom: {% if active_year == date.year|stringformat:"s" %}1px solid var(--text-color){% else %}none{% endif %}; padding-bottom: 5px;">
+                    {{ date.year }}
+                </a>
+            {% endfor %}
+        </div>
+    </header>
+
+    <div class="collections-grid">
+        {% for col in collections %}
+            <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
+                <div class="collection-image-wrapper">
+                    <img src="{{ col.cover.image.url }}" alt="{{ col.title }}">
+                </div>
+                <div class="collection-info">
+                    <h2>{{ col.title }}</h2>
+                    <p class="collection-meta">{{ col.captured_at|date:"M Y" }}</p>
+                </div>
+            </a>
+        {% empty %}
+            <p style="text-align: center; width: 100%; font-family: var(--font-sans); color: var(--accent-color);">
+                No hay colecciones disponibles para este año.
+            </p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

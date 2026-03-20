@@ -5,6 +5,22 @@ from django.shortcuts import render
 def about(request):
     return render(request, 'about.html')
 
+def collections_list(request):
+    year = request.GET.get('year')
+
+    if year:
+        collections = Collection.objects.filter(captured_at__year=year).order_by('-captured_at')
+    else:
+        collections = Collection.objects.all().order_by('-captured_at')
+    
+    years = Collection.objects.dates('captured_at', 'year', order='DESC')
+
+    return render(request, 'portfolio/collections_list.html', {
+        'collections': collections,
+        'years': years,
+        'active_year': year,
+    })
+
 class CollectionDetailView(DetailView):
     model = Collection
     template_name = 'portfolio/collection_detail.html'
