@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Me{% endblock %}
+
+{% block content %}
+<section class="about-section">
+    <div class="about-container">
+        
+        <!-- Bloque Imagen: Pegado a la izquierda -->
+        <div class="about-image">
+            <img src="{% static 'images/aboutme.webp' %}" alt="Francesca Sabia">
+        </div>
+
+        <!-- Bloque Texto: A la derecha y con aire -->
+        <div class="about-text">
+            <div class="about-text-content">
+                <span class="about-subtitle">About</span>
+                <h1>Francesca Sabia</h1>
+                
+                <div class="about-description">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce commodo hendrerit mi in pretium. Praesent id ipsum posuere, sagittis arcu eget, tempor sapien.</p>
+                    <p>Nam sapien lorem, tristique non odio et, lobortis egestas velit. Phasellus non tincidunt magna. Quisque rhoncus eget lorem in dignissim.</p>
+                </div>
+
+                <div class="about-footer">
+                    <div class="about-contact">
+                        <h3>Contacto</h3>
+                        <a href="mailto:francescasabiaph@gmail.com"><i class="far fa-envelope"></i> francescasabiaph@gmail.com</a>
+                        <a href="https://wa.me/5493413927660?text=Hola!%20Vi%20tu%20portfolio..." target="_blank"><i class="fab fa-whatsapp"></i> +54 9 341 392-7660</a>
+                    </div>
+                    
+                    <div class="about-social">
+                        <h3>Seguir</h3>
+                        <a href="https://www.instagram.com/chasabia/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
