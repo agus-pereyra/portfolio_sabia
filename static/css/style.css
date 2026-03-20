@@ -1,10 +1,16 @@
 /* static/css/style.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=IBM+Plex+Mono:wght@300;400&family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;500&display=swap');
+
 :root {
     --main-bg: #ffffff;
     --text-color: #1a1a1a;
     --accent-color: #888888;
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Inter', sans-serif;
+    --font-serif-alt: 'Cormorant Garamond', serif;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-code: 'IBM Plex Mono', monospace;
 }
 
 body {
@@ -15,7 +21,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Tipografía */
+/* FONT */
 
 h1, h2, .brand {
     font-family: var(--font-serif);
@@ -23,7 +29,7 @@ h1, h2, .brand {
     letter-spacing: -0.05em;
 }
 
-/* Navegación Minimalista */
+/* NAVBAR */
 
 .navbar {
     display: flex;
@@ -41,37 +47,21 @@ h1, h2, .brand {
 }
 
 .nav-links a {
+    font-family: var(--font-serif-alt);
+    letter-spacing: -0.02em;
     text-decoration: none;
     color: var(--accent-color);
-    margin-left: 30px;
-    font-size: 0.85rem;
+    margin-left: 25px;
+    font-size: 0.95rem;
     transition: 0.3s;
+    text-transform: uppercase; 
 }
 
 .nav-links a:hover {
     color: var(--text-color);
 }
 
-/* Grilla de Portfolio */
-.portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 15px; /* Espacio mínimo para look moderno */
-    padding: 0 5%;
-}
-
-.portfolio-item img {
-    width: 100%;
-    height: auto;
-    filter: grayscale(20%); /* Efecto sutil */
-    transition: 0.5s ease;
-}
-
-.portfolio-item img:hover {
-    filter: grayscale(0%);
-}
-
-/* Contenedor principal del Home */
+/* HOME */
 
 .home-intro {
     text-align: center;
@@ -92,14 +82,14 @@ h1, h2, .brand {
     font-size: 0.9rem;
 }
 
-/* Grilla de Colecciones en Home */
+/* COLLECTIONS GRID */
 
 .collections-container {
     display: flex;
-    flex-wrap: wrap; /* Para que si hay muchas, bajen a la siguiente línea */
+    flex-wrap: wrap;
     gap: 30px;
     padding: 0 5%;
-    justify-content: center; /* Centra las colecciones en la pantalla */
+    justify-content: center;
 }
 
 .collections-container p {
@@ -160,10 +150,9 @@ h1, h2, .brand {
     color: var(--accent-color);
     text-transform: uppercase;
     margin-top: 5px;
+    margin-bottom: 15px;
     letter-spacing: 1px;
 }
-
-/* --- Estilos para Detalle de Colección --- */
 
 .collection-detail-wrapper {
     max-width: 1600px;
@@ -171,18 +160,17 @@ h1, h2, .brand {
     padding: 0 5%;
 }
 
-/* Bloque de Información de la Colección */
 .collection-header-info {
     text-align: center;
     padding: 100px 0;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 0 auto; 
 }
 
 .collection-header-info h1 {
     font-size: 3.5rem;
     letter-spacing: -1px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .collection-meta-data {
@@ -191,11 +179,11 @@ h1, h2, .brand {
     font-size: 0.9rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 30px;
+    margin-bottom: 39px;
 }
 
 .collection-meta-data span {
-    margin: 0 15px;
+    margin: 0 5px;
 }
 
 .collection-description {
@@ -205,7 +193,8 @@ h1, h2, .brand {
     font-size: 1.1rem;
 }
 
-/* La Grilla de Fotos (una abajo de la otra) */
+/* PICTURES GRID */
+
 .photo-story-grid {
     display: flex;
     flex-direction: column; /* Una abajo de la otra */
@@ -228,18 +217,18 @@ h1, h2, .brand {
 }
 
 .photo-item:hover img {
-    transform: scale(1.03); /* Se agranda un 3% sutilmente */
-    opacity: 0.9; /* Opacidad ligera para dar feedback visual */
+    transform: scale(1.03);
+    opacity: 0.9;
 }
 
-/* Sección de Featuring */
+/* FEATURING */
 
 .collection-credits {
     margin: 40px auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    align-items: center; /* Mantiene el bloque centrado en la página */
+    align-items: center;
 }
 
 .collab-item {
@@ -284,8 +273,7 @@ h1, h2, .brand {
     opacity: 0.5;
 }
 
-
-/* Side menu (derecho) */
+/* SIDE MENU (rght) */
 
 .side-nav-right {
     height: 100%;
@@ -354,9 +342,11 @@ h1, h2, .brand {
     color: var(--text-color);
 }
 
+/* FOOTER */
+
 .main-footer {
-    background-color: #fcfcfc; /* Un blanco roto o gris casi imperceptible */
-    border-top: 1px solid #eee;
+    background-color: #f3f3f3; /* Un blanco roto o gris casi imperceptible */
+    border-top: 1px solid #e8e8e8;
     padding: 60px 0;
     margin-top: 100px;
     text-align: center;
@@ -375,7 +365,7 @@ h1, h2, .brand {
 }
 
 .footer-social a:hover {
-    color: var(--accent-color); /* El color que definimos para resaltar */
+    color: var(--accent-color);
 }
 
 .footer-info p {
@@ -386,7 +376,7 @@ h1, h2, .brand {
     text-transform: uppercase;
 }
 
-/* --- VISUALIZACIÓN IMÁGENES (MODAL) --- */
+/* --- MODAL --- */
 
 .modal-overlay {
     display: none;
@@ -398,34 +388,33 @@ h1, h2, .brand {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(5px);
+
     justify-content: center;
     align-items: center;
-    padding: 20px;
 }
 
-/* Contenedor que agrupa la imagen y los textos */
 .modal-content {
-    max-width: 90%;
-    max-height: 85vh;
+    max-width: 85%;
+    max-height: 90vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
-    outline: none;
+    z-index: 2050;
 }
 
 .image-viewer {
     position: relative;
-    display: block; /* Cambiamos a block */
-    margin: 0 auto; /* Centramos el bloque */
-    width: fit-content; /* Se ajusta al ancho real de la imagen */
-    height: fit-content; /* Se ajusta al alto real de la imagen */
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
     overflow: hidden;
     cursor: zoom-in;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     background-color: transparent;
-    line-height: 0; /* Elimina espacio inferior fantasma */
+    line-height: 0;
 }
 
 .modal-image {
@@ -440,19 +429,17 @@ h1, h2, .brand {
     vertical-align: middle; /* Elimina el gap inferior */
 }
 
-/* --- ESTADOS DE ZOOM (Activados por JS) --- */
+/* ---  ZOOM MODAL --- */
 
-/* Cuando la imagen tiene el zoom activo */
 .modal-image.is-zoomed {
-    transform: scale(3); /* Nivel de aumento */
+    transform: scale(3); /* zoom */
 }
 
-/* Cambia el cursor del contenedor cuando ya estamos en zoom */
-.image-viewer.viewing-zoom {
+.image-viewer.viewing-zoom { /* cursor en zoom */
     cursor: zoom-out;
 }
 
-/* --- ELEMENTOS DE INTERFAZ (Botones y Textos) --- */
+/* --- INTERFAZ MODAL --- */
 
 .modal-details {
     margin-top: 25px;
@@ -474,16 +461,15 @@ h1, h2, .brand {
     color: #888 !important;
 }
 
-/* Botón cerrar (X) */
 .close-modal {
     position: absolute;
-    top: 30px;
-    right: 40px;
-    font-size: 40px;
+    top: 20px;
+    right: 20px;
+    font-size: 35px;
     color: white;
     cursor: pointer;
-    z-index: 2100;
-    line-height: 1;
+    z-index: 2200;
+    padding: 10px;
     transition: opacity 0.3s;
 }
 
@@ -491,23 +477,78 @@ h1, h2, .brand {
     opacity: 0.7;
 }
 
-/* Flechas de navegación */
 .nav-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 40px;
+    font-size: 45px;
     color: rgba(255, 255, 255, 0.3);
     cursor: pointer;
-    padding: 30px;
+    padding: 20px;
     z-index: 2100;
     user-select: none;
-    transition: color 0.3s;
+    transition: all 0.3s ease;
 }
 
 .nav-arrow:hover {
     color: white;
+    transform: translateY(-50%) scale(1.1);
 }
 
-.left-arrow { left: 10px; }
-.right-arrow { right: 10px; }
+.left-arrow { left: 30px; }
+.right-arrow { right: 30px; }
+
+/* --- HERO VIDEO INDEX --- */
+
+.home-hero-video {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 50vh;
+    z-index: 1;
+    min-height: 180px;
+    overflow: hidden;
+    background-color: #000;
+}
+
+@media (max-width: 1000px) {
+    .home-hero-video {
+        height: 25vh; 
+        min-height: 50px; 
+    }
+    
+    .hero-content h1 {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+}
+
+.home-hero-video video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover; 
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 1;
+}
+
+/* MAIN (separado de HERO para posición relativa vs sticky) */
+
+.main-content { 
+    position: relative;
+    z-index: 10;       
+    background-color: var(--background-color, #fff); 
+    padding-top: 25px;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
+}
