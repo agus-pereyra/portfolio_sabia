@@ -13,10 +13,19 @@ class VideoInline(admin.StackedInline):
 
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_at')
+    prepopulated_fields = {"slug": ("title",)} # slug automático mientras se escribe el título
+    list_display = ('title', 'slug', 'is_featured', 'get_photos_count', 'get_videos_count', 'captured_at', 'created_at')
     search_fields = ('title',)
     inlines = [PictureInline, VideoInline]
     filter_horizontal = ('collaborators',)
+
+    def get_photos_count(self, obj):
+        return obj.get_photos_count()
+    get_photos_count.short_description = "Fotos"
+
+    def get_videos_count(self, obj):
+        return obj.get_videos_count()
+    get_videos_count.short_description = "Videos"
 
 @admin.register(Collaborator)
 class CollaboratorAdmin(admin.ModelAdmin):

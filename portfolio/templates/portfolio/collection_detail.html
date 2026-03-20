@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}{{ collection.title }}{% endblock %}
+
+{% block content %}
+<div class="collection-detail-wrapper">
+    <header class="collection-header-info">
+        <div class="collection-meta-data">
+            {% if collection.captured_at %}
+                <span>{{ collection.captured_at|date:"M Y"|upper }}</span>
+            {% endif %}
+            <span>·</span>
+            <span>{{ collection.get_photos_count }} FOTOGRAFÍAS</span>
+        </div>
+        
+        <h1>{{ collection.title }}</h1>
+
+        {% if collection.collaborators.all %}
+            <div class="collection-credits">
+                {% for collab in collection.collaborators.all %}
+                    <div class="collab-item">
+                        <a href="{{ collab.contact }}" target="_blank" class="collab-link">
+                            <span class="collab-name">{{ collab.first_name }} {{ collab.last_name }}</span>
+                        </a>                        
+                        <span class="collab-separator">—</span>
+                        <span class="collab-role">{{ collab.role }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+         
+        {% if collection.description %}
+            <div class="collection-description">
+                {{ collection.description|linebreaks }}
+            </div>
+        {% endif %}
+    </header>
+
+    <section class="photo-story-grid">
+        {% for pic in collection.pictures.all %}
+            <div class="photo-item">
+                <img src="{{ pic.image.url }}" 
+                    alt="{{ pic.title }}" 
+                    onclick="openModal({{ forloop.counter0 }})" 
+                    style="cursor: pointer;">
+            </div>
+        {% endfor %}
+    </section>
+</div>
+
+<div id="imageModal" class="modal-overlay" onclick="closeModal()">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+
+    <div class="nav-arrow left-arrow" onclick="changeImage(-1, event)">&#10094;</div>
+    <div class="nav-arrow right-arrow" onclick="changeImage(1, event)">&#10095;</div>
+
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div id="image-viewer" class="image-viewer">
+            <img id="modalImg" src="" alt="" class="modal-image">
+        </div>
+
+        <div class="modal-details">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDate"></p>
+            <p id="modalRes" class="modal-res"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+const photos = [
+    {% for pic in collection.pictures.all %}
+    {
+        url: "{{ pic.image.url }}",
+        title: "{{ pic.title|default:'' }}",
+        date: "{{ collection.captured_at|date:'M Y'|upper }}",
+        res: "{{ pic.image.width }}x{{ pic.image.height }} px"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+
+let currentIndex = 0;
+let viewer, modalImg;
+let isZoomActive = false; // Estado del zoom
+
+function openModal(index) {
+    currentIndex = index;
+    updateModalContent();
+    document.getElementById("imageModal").style.display = "flex";
+    document.body.style.overflow = "hidden";
+    
+    setTimeout(initZoomEffect, 10); 
+}
+
+function updateModalContent() {
+    const photo = photos[currentIndex];
+    modalImg = document.getElementById("modalImg");
+    viewer = document.getElementById("image-viewer");
+    const modalTitle = document.getElementById("modalTitle");
+
+    // Resetear estado antes de cambiar de foto
+    deactivateZoom();
+
+    if (modalImg) modalImg.style.transformOrigin = 'center center';
+    
+    modalImg.src = photo.url;
+    modalImg.style.opacity = "1";
+
+    if (photo.title && photo.title.trim() !== "") {
+        modalTitle.innerText = photo.title;
+        modalTitle.style.display = "block";
+    } else {
+        modalTitle.style.display = "none";
+    }
+
+    document.getElementById("modalDate").innerText = photo.date;
+    document.getElementById("modalRes").innerText = "Resolución: " + photo.res;
+}
+
+function initZoomEffect() {
+    viewer = document.getElementById("image-viewer");
+    if (!viewer) return;
+    
+    // 1. Clic para activar/desactivar
+    viewer.addEventListener("click", toggleZoom);
+    
+    // 2. Movimiento para panear
+    viewer.addEventListener("mousemove", (e) => {
+        if (isZoomActive) moveZoomOrigin(e);
+    });
+}
+
+function toggleZoom(e) {
+    // Evitamos que el clic cierre el modal
+    e.stopPropagation();
+
+    if (!isZoomActive) {
+        activateZoom(e);
+    } else {
+        deactivateZoom();
+    }
+}
+
+function activateZoom(e) {
+    isZoomActive = true;
+    modalImg.classList.add("is-zoomed");
+    viewer.classList.add("viewing-zoom");
+    
+    // Mover el origen al punto donde se hizo clic inicialmente
+    moveZoomOrigin(e);
+}
+
+function deactivateZoom() {
+    isZoomActive = false;
+    if (modalImg) {
+        modalImg.classList.remove("is-zoomed");
+    }
+    if (viewer) {
+        viewer.classList.remove("viewing-zoom");
+    }
+}
+
+function moveZoomOrigin(e) {
+    const rect = viewer.getBoundingClientRect();
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+
+    modalImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+}
+
+function changeImage(step, event) {
+    if (event) event.stopPropagation();
+    currentIndex += step;
+    if (currentIndex >= photos.length) currentIndex = 0;
+    if (currentIndex < 0) currentIndex = photos.length - 1;
+    updateModalContent();
+}
+
+function closeModal() {
+    document.getElementById("imageModal").style.display = "none";
+    document.body.style.overflow = "auto";
+    deactivateZoom();
+    if (modalImg) modalImg.style.transformOrigin = 'center center';
+}
+
+document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById("imageModal");
+    if (modal.style.display === "flex") {
+        if (e.key === "ArrowRight") changeImage(1);
+        if (e.key === "ArrowLeft") changeImage(-1);
+        if (e.key === "Escape") closeModal();
+    }
+});
+</script>
+{% endblock %}

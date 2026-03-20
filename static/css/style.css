@@ -1,0 +1,513 @@
+/* static/css/style.css */
+:root {
+    --main-bg: #ffffff;
+    --text-color: #1a1a1a;
+    --accent-color: #888888;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--main-bg);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Tipografía */
+
+h1, h2, .brand {
+    font-family: var(--font-serif);
+    font-weight: 350;
+    letter-spacing: -0.05em;
+}
+
+/* Navegación Minimalista */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 5%;
+}
+
+.brand {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--accent-color);
+    margin-left: 30px;
+    font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--text-color);
+}
+
+/* Grilla de Portfolio */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 15px; /* Espacio mínimo para look moderno */
+    padding: 0 5%;
+}
+
+.portfolio-item img {
+    width: 100%;
+    height: auto;
+    filter: grayscale(20%); /* Efecto sutil */
+    transition: 0.5s ease;
+}
+
+.portfolio-item img:hover {
+    filter: grayscale(0%);
+}
+
+/* Contenedor principal del Home */
+
+.home-intro {
+    text-align: center;
+    padding: 80px 0;
+}
+
+.home-intro h1 {
+    font-size: 2.8rem;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.home-intro p {
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+}
+
+/* Grilla de Colecciones en Home */
+
+.collections-container {
+    display: flex;
+    flex-wrap: wrap; /* Para que si hay muchas, bajen a la siguiente línea */
+    gap: 30px;
+    padding: 0 5%;
+    justify-content: center; /* Centra las colecciones en la pantalla */
+}
+
+.collections-container p {
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+}
+
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 40px;
+    padding: 0 5%;
+    margin-bottom: 100px;
+}
+
+.collection-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.collection-card:hover {
+    opacity: 0.8;
+}
+
+.collection-image-wrapper {
+    height: 400px; 
+    width: auto;
+    overflow: hidden;
+}
+
+.collection-image-wrapper img {
+    width: auto;
+    height: 100%;
+    display: block;
+    transition: transform 0.6s ease;
+}
+
+.collection-card:hover img {
+    transform: scale(1.02);
+}
+
+.collection-info {
+    margin-top: 15px;
+}
+
+.collection-info h2 {
+    font-size: 1.2rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.collection-meta {
+    font-size: 0.7rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    margin-top: 5px;
+    letter-spacing: 1px;
+}
+
+/* --- Estilos para Detalle de Colección --- */
+
+.collection-detail-wrapper {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+/* Bloque de Información de la Colección */
+.collection-header-info {
+    text-align: center;
+    padding: 100px 0;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.collection-header-info h1 {
+    font-size: 3.5rem;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+}
+
+.collection-meta-data {
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+
+.collection-meta-data span {
+    margin: 0 15px;
+}
+
+.collection-description {
+    font-family: var(--font-sans);
+    color: #444;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+/* La Grilla de Fotos (una abajo de la otra) */
+.photo-story-grid {
+    display: flex;
+    flex-direction: column; /* Una abajo de la otra */
+    gap: 50px; /* Espacio entre fotos */
+    margin-bottom: 150px;
+}
+
+.photo-item {
+    width: 100%;
+    overflow: hidden; 
+    background-color: #000;
+}
+
+.photo-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.photo-item:hover img {
+    transform: scale(1.03); /* Se agranda un 3% sutilmente */
+    opacity: 0.9; /* Opacidad ligera para dar feedback visual */
+}
+
+/* Sección de Featuring */
+
+.collection-credits {
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center; /* Mantiene el bloque centrado en la página */
+}
+
+.collab-item {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; 
+    gap: 15px;
+    width: 100%;
+    max-width: 500px; 
+    margin: 0 auto;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.collab-name {
+    font-weight: 400;
+}
+
+.collab-separator {
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collab-role {
+    text-align: left;
+    color: var(--accent-color);
+    font-weight: 300;
+}
+
+.collab-link {
+    text-align: right; 
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.3s;
+    display: block; 
+}
+
+.collab-link:hover {
+    opacity: 0.5;
+}
+
+
+/* Side menu (derecho) */
+
+.side-nav-right {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    padding-top: 80px;
+    border-left: 1px solid #eee;
+}
+
+.side-nav-content {
+    padding: 0 40px;
+    text-align: right;
+}
+
+.side-nav-content h3 {
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 0.7rem;
+    margin-bottom: 40px;
+    color: var(--accent-color);
+    font-family: var(--font-sans);
+}
+
+.side-nav-content a {
+    padding: 15px 0;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-family: var(--font-serif);
+    color: var(--text-color) !important;
+    display: block;
+    transition: 0.3s;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.side-nav-content a:hover {
+    padding-right: 15px;
+    color: var(--accent-color) !important;
+}
+
+.nav-year {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    color: #bbb;
+    margin-left: 10px;
+    font-weight: 300;
+}
+
+.close-btn {
+    position: absolute;
+    top: 25px;
+    left: 30px; 
+    font-size: 30px;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--text-color);
+}
+
+.main-footer {
+    background-color: #fcfcfc; /* Un blanco roto o gris casi imperceptible */
+    border-top: 1px solid #eee;
+    padding: 60px 0;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.footer-social {
+    margin-bottom: 30px;
+}
+
+.footer-social a {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    margin: 0 15px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: var(--accent-color); /* El color que definimos para resaltar */
+}
+
+.footer-info p {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #999;
+    text-transform: uppercase;
+}
+
+/* --- VISUALIZACIÓN IMÁGENES (MODAL) --- */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Contenedor que agrupa la imagen y los textos */
+.modal-content {
+    max-width: 90%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    outline: none;
+}
+
+.image-viewer {
+    position: relative;
+    display: block; /* Cambiamos a block */
+    margin: 0 auto; /* Centramos el bloque */
+    width: fit-content; /* Se ajusta al ancho real de la imagen */
+    height: fit-content; /* Se ajusta al alto real de la imagen */
+    overflow: hidden;
+    cursor: zoom-in;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    background-color: transparent;
+    line-height: 0; /* Elimina espacio inferior fantasma */
+}
+
+.modal-image {
+    display: block;
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    transform-origin: center center;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+    vertical-align: middle; /* Elimina el gap inferior */
+}
+
+/* --- ESTADOS DE ZOOM (Activados por JS) --- */
+
+/* Cuando la imagen tiene el zoom activo */
+.modal-image.is-zoomed {
+    transform: scale(3); /* Nivel de aumento */
+}
+
+/* Cambia el cursor del contenedor cuando ya estamos en zoom */
+.image-viewer.viewing-zoom {
+    cursor: zoom-out;
+}
+
+/* --- ELEMENTOS DE INTERFAZ (Botones y Textos) --- */
+
+.modal-details {
+    margin-top: 25px;
+    text-align: center;
+    color: white;
+    font-family: var(--font-sans);
+}
+
+.modal-details h2 {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.modal-res {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #888 !important;
+}
+
+/* Botón cerrar (X) */
+.close-modal {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    z-index: 2100;
+    line-height: 1;
+    transition: opacity 0.3s;
+}
+
+.close-modal:hover {
+    opacity: 0.7;
+}
+
+/* Flechas de navegación */
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    padding: 30px;
+    z-index: 2100;
+    user-select: none;
+    transition: color 0.3s;
+}
+
+.nav-arrow:hover {
+    color: white;
+}
+
+.left-arrow { left: 10px; }
+.right-arrow { right: 10px; }
