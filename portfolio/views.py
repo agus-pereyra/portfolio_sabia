@@ -1,5 +1,9 @@
 from .models import Collaborator, Collection, Picture, Video
 from django.views.generic import DetailView, ListView
+from django.shortcuts import render
+
+def about(request):
+    return render(request, 'about.html')
 
 class CollectionDetailView(DetailView):
     model = Collection
