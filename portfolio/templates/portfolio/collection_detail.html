@@ -3,6 +3,7 @@
 {% block title %}{{ collection.title }}{% endblock %}
 
 {% block content %}
+
 <div class="collection-detail-wrapper">
     <header class="collection-header-info">
         <div class="collection-meta-data">
@@ -84,6 +85,8 @@ let viewer, modalImg;
 let isZoomActive = false; // Estado del zoom
 
 function openModal(index) {
+    const modal = document.getElementById("imageModal");
+    modal.style.display = "flex";
     currentIndex = index;
     updateModalContent();
     document.getElementById("imageModal").style.display = "flex";

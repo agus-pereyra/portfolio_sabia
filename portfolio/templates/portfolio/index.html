@@ -1,39 +1,56 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Francesca Sabia Portfolio{% endblock %}
 
 {% block content %}
+    <section class="home-hero-video">
+        <video autoplay muted loop playsinline poster="{% static 'images/home-placeholder.webp' %}">
+            <source src="{% static 'videos/home-hero.mp4' %}" type="video/mp4">
+            Tu navegador no soporta videos.
+        </video>
+        <div class="hero-overlay"></div>
+    </section>
+
+    <main class=main-content>
+
     <header class="home-intro">
         <h1>Trabajos ~ destacados</h1>
         <p>Sesiones Seleccionadas</p>
     </header>
-
-    <!-- Lista de Colecciones -->
-    <section class="collections-container">
-        {% for col in collections %}
-            <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
-                <div class="collection-image-wrapper">
-                    {% with first_pic=col.pictures.first %}
-                        {% if first_pic %}
-                            <img src="{{ first_pic.image.url }}" alt="{{ col.title }}">
-                        {% else %}
-                            <div style="height: 100%; width: 300px; background: #f0f0f0;"></div>
-                        {% endif %}
-                    {% endwith %}
-                </div>
-                
-                <div class="collection-info">
-                    <h2>{{ col.title }}</h2>
-                    <div class="collection-meta">
-                        {% if col.captured_at %}
-                            {{ col.captured_at|date:"M Y"|upper }} &nbsp;·&nbsp; 
-                        {% endif %}
-                        {{ col.get_photos_count }} Fotos &nbsp;·&nbsp; {{ col.get_videos_count }} Videos
+        <section class="collections-container">
+            {% for col in collections %}
+                <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
+                    <div class="collection-image-wrapper">
+                        {% with first_pic=col.pictures.first %}
+                            {% if first_pic %}
+                                <img src="{{ first_pic.image.url }}" alt="{{ col.title }}">
+                            {% else %}
+                                <div style="height: 100%; width: 300px; background: #f0f0f0;"></div>
+                            {% endif %}
+                        {% endwith %}
                     </div>
-                </div>
-            </a>
-        {% empty %}
-            <p style="grid-column: 1/-1; text-align: center; padding: 50px;">Próximamente nuevas sesiones destacadas.</p>
-        {% endfor %}
-    </section>
+                    
+                    <div class="collection-info">
+                        <h2>{{ col.title }}</h2>
+                        <div class="collection-meta">
+                            {% if col.get_photos_count > 0 %}
+                                {{ col.get_photos_count }} Foto{{ col.get_photos_count|pluralize:"s" }}
+                            {% endif %}
+
+                            {% if col.get_photos_count > 0 and col.get_videos_count > 0 %}
+                                &nbsp;·&nbsp;
+                            {% endif %}
+
+                            {% if col.get_videos_count > 0 %}
+                                {{ col.get_videos_count }} Video{{ col.get_videos_count|pluralize:"s" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <p style="grid-column: 1/-1; text-align: center; padding: 50px;">Próximamente nuevas sesiones destacadas.</p>
+            {% endfor %}
+        </section>
+    </main>
 {% endblock %}
