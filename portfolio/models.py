@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
-
+import datetime 
+from moviepy import VideoFileClip
 class Collaborator(models.Model):
     first_name = models.CharField(max_length=20, verbose_name='Nombre/s')
     last_name = models.CharField(max_length=30, verbose_name='Apellido')
@@ -109,10 +110,25 @@ class Video(models.Model):
 
     id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True) 
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        if self.file and not self.duration:
+            try:
+                clip = VideoFileClip(self.file.path)
+                
+                self.duration = datetime.timedelta(seconds=clip.duration)
+                
+                clip.close()
+                
+                super().save(update_fields=['duration'])
+            except Exception as e:
+                print(f"Error extrayendo duración del video: {e}")
+
     def __str__(self):
-        if self.title:
-            return f'{self.title} - {self.duration}'
-        return f'Sín título - {self.duration}'
+        if self.id_collection:
+            return f'{self.id_collection}'
+        return 'No ID'
     
     class Meta:
         verbose_name = 'Video'

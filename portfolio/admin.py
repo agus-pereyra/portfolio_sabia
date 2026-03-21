@@ -37,13 +37,25 @@ class PictureInline(admin.TabularInline):
 
     def preview(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="width: 50px; height: auto;" />', obj.image.url)
+            return format_html('<img src="{}" style="width: 100px; height: auto;" />', obj.image.url)
         return ""
     
-class VideoInline(admin.StackedInline):
+class VideoInline(admin.TabularInline):
     model = Video
-    extra = 1
+    extra = 0
+    readonly_fields = ('id_collection', 'preview')
+    fields = ('id_collection', 'file', 'preview')
 
+    def preview(self, obj):
+        if obj.file:
+            return format_html(
+                '''<video src="{}" style="width: 150px; height: auto; border-radius: 4px;" 
+                   controls muted preload="metadata">
+                   </video>''', 
+                obj.file.url
+            )
+        return ""
+    
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)} # slug automático mientras se escribe el título
@@ -65,7 +77,7 @@ class CollectionAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
 
-        form.base_fields['upload_multiple'] = MultipleFileField(
+        form.base_fields['upload_multiple'] = MultipleImageField(
             label="Cargar Imágenes",
             required=False
         )
@@ -75,7 +87,6 @@ class CollectionAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        
         
         photos = request.FILES.getlist('upload_multiple')
         if photos:
