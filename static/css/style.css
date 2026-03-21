@@ -1036,3 +1036,77 @@ h1, h2, .brand {
 .show-all-link:hover .arrow {
     transform: translateX(5px); /* Efecto lindo: la flechita se mueve al pasar el mouse */
 }
+
+/* CONTACT MODAL */
+.contact-modal-content {
+    position: relative;
+    background: #fff;
+    width: 90%;
+    max-width: 550px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.contact-header h2 { 
+    color: var(--text-color); margin-bottom: 10px; 
+}
+.contact-header p { 
+    color: var(--accent-color); font-size: 0.9rem; margin-bottom: 30px; 
+}
+
+#contactForm input, #contactForm textarea {
+    width: 100%;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    font-family: var(--font-sans);
+    outline: none;
+}
+#contactModal.modal-overlay {
+    display: none; /* Se activa con JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999; /* Un número muy alto para que tape todo */
+    justify-content: center;
+    align-items: center;
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+#formResponse { margin-top: 20px; font-size: 0.8rem; letter-spacing: 1px; }
+
+.iti { width: 100%; margin-bottom: 20px; }
+.iti__flag-container { outline: none; }
+.contact-modal-content input#phone {
+    padding-left: 90px !important; /* Espacio para la bandera y el código */
+    border-bottom: 1px solid #eee;
+}
+
+.iti--separate-dial-code .iti__selected-dial-code {
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    font-size: 14px;
+}
+
+.spinner {
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(0,0,0,0.1);
+    border-top: 2px solid var(--accent-color);
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px;
+}
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+}
+
+#sendBtn:disabled {
+    pointer-events: none;
+}

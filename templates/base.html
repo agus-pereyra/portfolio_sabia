@@ -3,6 +3,7 @@
 <html lang="es">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>{% block title %}Portfolio{% endblock %}</title>
 </head>
@@ -13,7 +14,7 @@
         <div class="nav-links">
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'collections_list' %}" onmouseenter="openNav()", id="albums-nav-link">Albums</a>
-            <a href="/contact">Contact</a>
+            <a href="#" onclick="openContactModal(); return false;">Contact</a>
             <a href="{% url 'about' %}">About Me</a>
         </div>
 
@@ -53,11 +54,42 @@
             </div>
         </div>
     </footer>
+
+    <div id="contactModal" class="modal-overlay" onclick="closeContactModal()">
+        <span class="close-modal" onclick="closeContactModal()">&times;</span>
+        <div class="modal-content contact-modal-content" onclick="event.stopPropagation()">
+            <div class="contact-header">
+                <h2>Contact</h2>
+                <p>Hablemos de tu próximo proyecto.</p>
+            </div>
+            
+            <form id="contactForm">
+                {% csrf_token %}
+                <div class="form-row">
+                    <input type="text" name="first_name" placeholder="Nombre" required>
+                    <input type="text" name="last_name" placeholder="Apellido" required>
+                </div>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="tel" id="phone" name="phone_input" placeholder="Número de teléfono (Opcional)">
+                <input type="hidden" name="phone" id="full_phone">
+                <textarea name="message" placeholder="Tu propuesta o mensaje" rows="5" required></textarea>
+                
+                <button type="submit" id="sendBtn" class="show-all-link" style="border:none; cursor:pointer; background:none;">
+                    ENVIAR <span class="arrow">→</span>
+                </button>
+                <div id="formResponse"></div>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
 
 <!-- script del side-menu -->
 <script>
+// SIDE-MENU JS
 let closeTimeout;
 
 function openNav() {
@@ -66,18 +98,15 @@ function openNav() {
 }
 
 function closeNav() {
-    // Damos un pequeño margen de milisegundos para que el mouse llegue al menú
     closeTimeout = setTimeout(() => {
         document.getElementById("side-menu").style.width = "0";
     }, 300); 
 }
 
-// Aseguramos que si el mouse entra al menú, no se cierre
 document.getElementById("side-menu").addEventListener('mouseenter', () => {
     clearTimeout(closeTimeout);
 });
 
-// Mantenemos tu lógica de cerrar al hacer clic fuera por seguridad
 document.addEventListener('click', function(event) {
     var menu = document.getElementById("side-menu");
     var btn = document.getElementById("albums-nav-link");
@@ -85,4 +114,77 @@ document.addEventListener('click', function(event) {
         closeNav();
     }
 });
+
+
+// CONTACT MODAL JS
+const phoneInputField = document.querySelector("#phone");
+    const fullPhoneInput = document.querySelector("#full_phone");
+
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        initialCountry: "auto", // Detecta el país por IP
+        geoIpLookup: function(success, failure) {
+            fetch("https://ipapi.co/json").then(res => res.json()).then(data => success(data.country_code));
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
+        preferredCountries: ["ar", "us", "es"], // Países que salen primero
+        separateDialCode: true, // Muestra el +54 fuera del input
+    });
+
+    // Antes de enviar el formulario por AJAX
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+        // Guardamos el número completo (ej: +54911223344) en el campo oculto
+        fullPhoneInput.value = phoneInput.getNumber();
+    });
+
+function openContactModal() {
+    document.getElementById("contactModal").style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+
+function closeContactModal() {
+    document.getElementById("contactModal").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+document.getElementById("contactForm").onsubmit = function(e) {
+    e.preventDefault();
+    
+    const btn = document.getElementById("sendBtn");
+    const responseDiv = document.getElementById("formResponse");
+    
+    document.getElementById("full_phone").value = phoneInput.getNumber();
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> ENVIANDO...';
+    btn.style.opacity = "0.5";
+    btn.style.cursor = "not-allowed";
+
+    fetch("{% url 'contact_submit' %}", {
+        method: "POST",
+        body: new FormData(this),
+        headers: { "X-CSRFToken": "{{ csrf_token }}" }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            responseDiv.innerHTML = "<span style='color:green; font-weight:bold;'>" + data.message + "</span>";
+            this.reset();
+            // Cerramos el modal después de 2 segundos de éxito
+            setTimeout(closeContactModal, 2000);
+        } else {
+            responseDiv.innerHTML = "<span style='color:red;'>" + data.message + "</span>";
+            // Si hay error, rehabilitamos el botón para que intente de nuevo
+            btn.disabled = false;
+            btn.innerHTML = 'REINTENTAR <span class="arrow">→</span>';
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+        }
+    })
+    .catch(error => {
+        responseDiv.innerHTML = "<span style='color:red;'>Error de conexión.</span>";
+        btn.disabled = false;
+        btn.innerHTML = 'REINTENTAR <span class="arrow">→</span>';
+    });
+};
 </script>
+
