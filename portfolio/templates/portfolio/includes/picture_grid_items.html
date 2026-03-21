@@ -1,0 +1,9 @@
+<!-- PARTIAL HTML -->
+{% for picture in random_pictures %}
+    <div class="grid-item {% if forloop.counter|divisibleby:3 %}tall{% elif forloop.counter|divisibleby:7 %}wide{% endif %}" id="pic-{{ picture.id }}">
+        <img src="{{ picture.image.url }}" alt="Archive" loading="lazy">
+        <a href="{% url 'collection_detail' picture.collection.slug %}#pic-{{ picture.id }}" class="grid-item-overlay">
+            <span>View Detail</span>
+        </a>
+    </div>
+{% endfor %}

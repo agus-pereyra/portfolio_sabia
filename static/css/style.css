@@ -65,12 +65,13 @@ h1, h2, .brand {
 
 .home-intro {
     text-align: center;
-    padding-top: 60px;
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
 .home-intro h1 {
     font-size: 2.8rem;
-    letter-spacing: 8px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 0px;
 }
@@ -220,6 +221,7 @@ h1, h2, .brand {
     width: 100%;
     overflow: hidden; 
     background-color: #000;
+    scroll-margin-top: 100px;
 }
 
 .photo-item img {
@@ -614,6 +616,10 @@ h1, h2, .brand {
     min-height: 180px;
     overflow: hidden;
     background-color: #000;
+
+    justify-content: center;
+    display: flex;
+    align-items: center;
 }
 
 @media (max-width: 1000px) {
@@ -633,9 +639,10 @@ h1, h2, .brand {
     top: 50%;
     left: 50%;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     transform: translate(-50%, -50%);
     object-fit: cover; 
+    
 }
 
 .hero-overlay {
@@ -645,7 +652,35 @@ h1, h2, .brand {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.25);
-    z-index: 1;
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3; /* Por encima del video y del overlay */
+    text-align: center;
+}
+
+.hero-content h1 {
+    color: #ffffff;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    margin: 0;
+    text-transform: uppercase;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); 
+}
+
+.hero-content h2 {
+    color: #ffffff;
+    font-family: var(--font-serif);
+    font-size: clamp(0.5rem, 5vw, 2rem);
+    font-weight: 100;
+    letter-spacing: 0.2em;
+    margin: 0;
+    text-transform: lowercase;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* MAIN (separado de HERO para posición relativa vs sticky) */
@@ -802,7 +837,6 @@ h1, h2, .brand {
 
 .collections-slider {
     width: 100%;
-    /* padding: 80px 0 20px 0 !important; */
     padding-top: 80px;
     overflow: hidden;
     position: relative;
@@ -1007,7 +1041,7 @@ h1, h2, .brand {
 .show-all-wrapper {
     text-align: center;
     margin-top: -30px; /* Sube un poco para acercarse al slider */
-    margin-bottom: 80px;
+    margin-bottom: 10px;
     position: relative;
     z-index: 20; /* Para que quede por encima de las sombras del slider */
     padding: 40px 0px;
@@ -1109,4 +1143,162 @@ h1, h2, .brand {
 
 #sendBtn:disabled {
     pointer-events: none;
+}
+
+/* PICTURES GRID */
+
+.random-grid-section {
+    padding: 100px 0;
+    background-color: #fff;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-top: -60px;
+}
+
+.grid-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.grid-header h2 {
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0px;
+}
+
+.grid-header p {
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    padding-bottom: 10px;
+}
+
+.masonry-wrapper {
+    column-count: 4; 
+    column-gap: 15px;
+    padding: 0 15px;
+}
+
+.grid-item {
+    display: inline-block;
+    margin-bottom: 15px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.grid-item.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.grid-item img {
+    width: 100%;
+    display: block;
+    transition: transform 0.6s ease;
+}
+
+.grid-item:hover img {
+    transform: scale(1.08);
+}
+
+.grid-item-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.grid-item:hover .grid-item-overlay {
+    opacity: 1;
+}
+
+@media (max-width: 1024px) { .masonry-wrapper { column-count: 3; } }
+@media (max-width: 768px) { .masonry-wrapper { column-count: 2; } }
+
+.btn-minimal {
+    background: transparent;
+    border: 1px solid #ddd;
+    padding: 12px 30px;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-minimal:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.btn-minimal .icon {
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* El contenedor de las fotos */
+#masonry-container {
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* Clase para cuando las fotos están "naciendo" */
+.grid-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Clase para mostrarlas */
+.grid-item.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* FROM RANDOM GRID TO PHOTO IN COLLECTION JUMP */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.photo-item:target {
+    /* Un pequeño pulso de escala y brillo */
+    animation: highlightLanding 1.5s ease-out;
+    outline: none;
+}
+
+@keyframes highlightLanding {
+    0% { 
+        filter: brightness(1);
+        transform: scale(1);
+    }
+    30% { 
+        filter: brightness(1.2); /* Brilla un poquito */
+        transform: scale(1.03);  /* Crece apenas */
+    }
+    100% { 
+        filter: brightness(1);
+        transform: scale(1);
+    }
 }

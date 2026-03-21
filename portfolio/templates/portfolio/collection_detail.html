@@ -58,10 +58,11 @@
         {% endfor %}
 
         {% for pic in collection.pictures.all %}
-            <div class="photo-item media-item" 
+            <div id="pic-{{ pic.id }}" class="photo-item media-item" 
                 data-type="image" 
                 data-url="{{ pic.image.url }}"
-                onclick="openModal({{ forloop.counter0|add:collection.videos.count }})">
+                data-index="{{ forloop.counter0|add:collection.videos.count }}"
+                onclick="openModal(this.getAttribute('data-index'))">
                 <img src="{{ pic.image.url }}" 
                     alt="{{ pic.title }}" 
                     style="cursor: pointer;">
@@ -174,6 +175,7 @@ function closeModal() {
     document.getElementById("imageModal").style.display = "none";
     document.body.style.overflow = "auto";
     deactivateZoom();
+    history.replaceState(null, null, window.location.pathname);
 }
 
 function initZoomEffect() {
@@ -230,6 +232,22 @@ document.addEventListener('keydown', function(e) {
         if (e.key === "ArrowRight") changeImage(1);
         if (e.key === "ArrowLeft") changeImage(-1);
         if (e.key === "Escape") closeModal();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#pic-')) {
+        const targetElement = document.querySelector(hash);
+        if (targetElement) {
+            // Solo nos aseguramos de que se centre bien y con suavidad
+            setTimeout(() => {
+                targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
+        }
     }
 });
 </script>

@@ -2,17 +2,20 @@
 {% load static %}
 
 {% block content %}
-    <!-- Sección Video Hero -->
     <section class="home-hero-video">
         <video autoplay muted loop playsinline poster="{% static 'images/home-placeholder.webp' %}">
             <source src="{% static 'videos/home-hero.mp4' %}" type="video/mp4">
         </video>
         <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>FRANCESCA SABIA</h1>
+            <h2>Portfolio</h2>
+        </div>
     </section>
 
     <main class="main-content">
         <header class="home-intro">
-            <h1>Destacados</h1>
+            <h1>Albums</h1>
             <p>Sesiones Seleccionadas</p>
         </header>
 
@@ -50,17 +53,31 @@
                     </div>
                 {% endfor %}
             </div>
-            
-            <!-- Solo Flechas de Navegación -->
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
+            <div class="show-all-wrapper">
+                <a href="{% url 'collections_list' %}" class="show-all-link">
+                    Ver archivo completo <span class="arrow">→</span>
+                </a>
+            </div>
         </section>
 
-        <div class="show-all-wrapper">
-            <a href="{% url 'collections_list' %}" class="show-all-link">
-                Ver archivo completo <span class="arrow">→</span>
-            </a>
-        </div>
+        <section class="random-grid-section">
+            <div class="grid-header">
+                <h2 class="fade-in">Gallery</h2>
+                <p>Descubrí mis trabajos</p>
+                <button id="shuffle-btn" class="btn-minimal">
+                    <span class="icon">↺</span> SHUFFLE
+                </button>
+            </div>
+            
+            <div id="masonry-container" class="masonry-wrapper">
+                {% include 'portfolio/includes/picture_grid_items.html' %}
+            </div>
+            <div class="grid-footer" style="text-align: center; margin-top: 40px;">
+        
+            </div>
+        </section>
     </main>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
@@ -73,12 +90,8 @@
             centeredSlides: true,
             spaceBetween: 100,
             loop: true,
-            
-            // loopedSlides: 3,
-            // watchSlidesProgress: true,
 
             loopedSlides: 8, 
-            // loopAdditionalSlides: 5,
             watchSlidesProgress: true,
             convertToPopover: false,
 
@@ -87,7 +100,7 @@
 
             touchReleaseOnEdges: true ,
             edgeSwipeThreshold: 20,
-            
+
             speed: 3500,
             autoplay: {
                 delay: 3000,
@@ -105,6 +118,78 @@
                 slideShadows: false,
             },
         });
+    });
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.grid-item').forEach(item => {
+        observer.observe(item);
+    });
+
+    document.getElementById('shuffle-btn').addEventListener('click', function() {
+        const container = document.getElementById('masonry-container');
+        const btn = this;
+        const icon = btn.querySelector('.icon');
+        
+        // 1. Efecto visual de salida
+        container.style.opacity = '0';
+        icon.classList.add('spinning'); // La animación de rotación que mencionamos
+        btn.disabled = true;
+
+        // 2. Pedir las nuevas fotos
+        fetch("{% url 'get_random_pics' %}")
+            .then(response => response.text())
+            .then(html => {
+                // Un pequeño delay para que la transición de salida se complete
+                setTimeout(() => {
+                    // 3. Inyectar el nuevo HTML
+                    container.innerHTML = html;
+                    
+                    // 4. TRUCO: Esperar a que las imágenes se descarguen
+                    const images = container.querySelectorAll('img');
+                    let loadedCount = 0;
+
+                    images.forEach(img => {
+                        if (img.complete) {
+                            checkAllLoaded();
+                        } else {
+                            img.addEventListener('load', checkAllLoaded);
+                        }
+                    });
+
+                    function checkAllLoaded() {
+                        loadedCount++;
+                        if (loadedCount === images.length) {
+                            // 5. Mostrar todo junto con efecto fade-in
+                            container.style.opacity = '1';
+                            
+                            // Aplicamos la clase de animación a cada item con un leve delay
+                            container.querySelectorAll('.grid-item').forEach((item, index) => {
+                                setTimeout(() => {
+                                    item.classList.add('loaded');
+                                }, index * 50); // Efecto cascada
+                            });
+
+                            // Limpiar botón
+                            btn.disabled = false;
+                            icon.classList.remove('spinning');
+                        }
+                    }
+                }, 400);
+            })
+            .catch(error => {
+                console.error("Error al barajar:", error);
+                btn.disabled = false;
+            });
     });
     </script>
 {% endblock %}
