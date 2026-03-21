@@ -13,12 +13,12 @@
 
         <div class="nav-links">
             <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'collections_list' %}" onmouseenter="openNav()", id="albums-nav-link">Albums</a>
+            <a href="{% url 'collections_list' %}" id="albums-nav-link" onmouseenter="openNav()" onmouseleave="closeNav()">Albums</a>
             <a href="#" onclick="openContactModal(); return false;">Contact</a>
             <a href="{% url 'about' %}">About Me</a>
         </div>
 
-        <div id="side-menu" class="side-nav-right", onmouseleave="closeNav()">
+        <div id="side-menu" class="side-nav-right" onmouseenter="openNav()" onmouseleave="closeNav()">
             <div class="side-nav-header">
                 <span class="close-btn" onclick="closeNav()">&times;</span>
             </div>
@@ -89,7 +89,6 @@
 
 <!-- script del side-menu -->
 <script>
-// SIDE-MENU JS
 let closeTimeout;
 
 function openNav() {
@@ -103,18 +102,13 @@ function closeNav() {
     }, 300); 
 }
 
-document.getElementById("side-menu").addEventListener('mouseenter', () => {
-    clearTimeout(closeTimeout);
-});
-
 document.addEventListener('click', function(event) {
     var menu = document.getElementById("side-menu");
     var btn = document.getElementById("albums-nav-link");
     if (!menu.contains(event.target) && event.target !== btn) {
-        closeNav();
+        document.getElementById("side-menu").style.width = "0"; 
     }
 });
-
 
 // CONTACT MODAL JS
 const phoneInputField = document.querySelector("#phone");

@@ -73,7 +73,6 @@ h1, h2, .brand {
     font-size: 2.8rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 0px;
 }
 
 .home-intro p {
@@ -160,6 +159,7 @@ h1, h2, .brand {
     margin: 0 auto;
     padding: 0 5%; 
     position: relative;
+    top: 0;
 }
 
 .collection-header-info {
@@ -169,11 +169,11 @@ h1, h2, .brand {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
-    min-height: 70vh; 
+    min-height: 20vh; 
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 60px 0; 
+    padding: 40px 0; 
 }
 
 .collection-header-info h1 {
@@ -956,7 +956,7 @@ h1, h2, .brand {
 /* --- ARCHIVE SECTION --- */
 
 .archive-section {
-    padding: 100px 5% 60px;
+    padding-top: 20px;
 }
 
 .archive-header {
@@ -1210,7 +1210,7 @@ h1, h2, .brand {
     height: 100%;
     display: block;
     object-fit: cover;
-    transition: transform 0.6s ease;
+    transition: transform 0.8s ease;
 }
 
 .grid-item:hover img,
@@ -1220,8 +1220,11 @@ h1, h2, .brand {
 
 .grid-item-overlay {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.2);
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 0.4 lo hace un poco más oscuro y legible */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1229,9 +1232,19 @@ h1, h2, .brand {
     transition: opacity 0.3s ease;
     color: white;
     font-family: var(--font-sans);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     letter-spacing: 2px;
     text-transform: uppercase;
+    text-decoration: none; /* Evita que el link se subraye */
+    z-index: 10; /* CRUCIAL: Lo obliga a estar por encima de la foto/video */
+}
+
+.grid-item:hover .grid-item-overlay {
+    opacity: 1;
+}
+
+.grid-item-overlay span {
+    pointer-events: none; 
 }
 
 @media (max-width: 1024px) { .masonry-wrapper { column-count: 3; } }
