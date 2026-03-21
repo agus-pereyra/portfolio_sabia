@@ -149,3 +149,4 @@ class Video(models.Model):
         verbose_name = 'Video'
         verbose_name_plural = 'Videos'
         ordering = ['-captured_at']
+

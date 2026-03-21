@@ -32,7 +32,9 @@ class PictureInline(admin.TabularInline):
     extra = 0
     readonly_fields = ('id_collection', 'width', 'height', 'preview')
     fields = ('id_collection', 'image', 'width', 'height', 'preview')
-    classes = ('collapse',)
+    classes = ('collapse', 'open')
+    # per_page = 5
+    show_change_link = True
 
     def preview(self, obj):
         if obj.image:
@@ -44,7 +46,9 @@ class VideoInline(admin.TabularInline):
     extra = 0
     readonly_fields = ('id_collection', 'width', 'height', 'duration', 'preview')
     fields = ('id_collection', 'file', 'width', 'height', 'duration', 'preview')
-    classes = ('collapse',)
+    classes = ('collapse', 'open')
+    # per_page = 5
+    show_change_link = True
 
     def preview(self, obj):
         if obj.file:
@@ -66,7 +70,7 @@ class CollectionAdmin(admin.ModelAdmin):
 
     form = CollectionForm
 
-    list_display = ('title', 'captured_at', 'is_featured', 'get_photos_count')
+    list_display = ('title', 'slug',  'is_featured', 'get_photos_count', 'get_videos_count', 'captured_at')
     
     list_editable = ('is_featured',)
     
@@ -77,12 +81,12 @@ class CollectionAdmin(admin.ModelAdmin):
             'fields': ('title', 'slug', 'description', 'captured_at', 'is_featured')
         }),
         ('Portadas (Elegir solo una)', {
-            'classes': ('collapse',),
+            'classes': ('collapse', 'open'),
             'fields': ('cover', 'cover_video'),
             'description': 'Si seleccionas una foto de portada, asegúrate de que el video de portada esté vacío.'
         }),
         ('Carga de Archivos', {
-            'classes': ('collapse',),
+            'classes': ('collapse', 'open'),
             'fields': ('upload_multiple_pictures', 'upload_multiple_videos'),
         }),
     )
@@ -153,7 +157,7 @@ class CollectionAdmin(admin.ModelAdmin):
 class CollaboratorAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'role', 'genre')
     list_filter = ('genre', 'role')
-    classes = ('collapse',)
+    classes = ('collapse', 'open')
 
 admin.site.register(Picture)
 admin.site.register(Video)
