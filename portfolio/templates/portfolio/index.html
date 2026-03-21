@@ -28,7 +28,7 @@
                             <div class="collection-image-wrapper">
                                 {% if col.cover_video %}
                                     <video autoplay muted loop playsinline width="100%" height="100%" style="object-fit: cover;">
-                                        <source src="{{ col.cover_video.file.url }}" type="video/mp4", loading="eager">
+                                        <source src="{{ col.cover_video.file.url }}" type="video/mp4" loading="eager">
                                     </video>
                                 {% elif col.cover %}
                                     <img src="{{ col.cover.image.url }}" alt="{{ col.title }}", loading="eager">
@@ -89,19 +89,20 @@
             slidesPerView: 'auto',
             centeredSlides: true,
             spaceBetween: 100,
-            loop: true,
+            loop: false,
 
-            loopedSlides: 8, 
-            watchSlidesProgress: true,
-            convertToPopover: false,
+            // loopedSlides: 8, 
+            // watchSlidesProgress: true,
+            // convertToPopover: false,
 
             keyboard: true,
             grabCursor: true,
-
+            
             touchReleaseOnEdges: true ,
             edgeSwipeThreshold: 20,
+            // rewind = false,
 
-            speed: 3500,
+            speed: 1500,
             autoplay: {
                 delay: 3000,
                 disableOnInteraction: false,
@@ -142,53 +143,75 @@
         
         // 1. Efecto visual de salida
         container.style.opacity = '0';
-        icon.classList.add('spinning'); // La animación de rotación que mencionamos
+        if(icon) icon.classList.add('spinning');
         btn.disabled = true;
 
-        // 2. Pedir las nuevas fotos
-        fetch("{% url 'get_random_pics' %}")
+        // 2. Pedir la nueva mezcla de fotos y videos
+        fetch("{% url 'get_random_media' %}")
             .then(response => response.text())
             .then(html => {
-                // Un pequeño delay para que la transición de salida se complete
                 setTimeout(() => {
                     // 3. Inyectar el nuevo HTML
                     container.innerHTML = html;
                     
-                    // 4. TRUCO: Esperar a que las imágenes se descarguen
-                    const images = container.querySelectorAll('img');
+                    // 4. Buscar TODO el contenido multimedia (imágenes Y videos)
+                    const mediaElements = container.querySelectorAll('img, video');
                     let loadedCount = 0;
 
-                    images.forEach(img => {
-                        if (img.complete) {
-                            checkAllLoaded();
-                        } else {
-                            img.addEventListener('load', checkAllLoaded);
+                    // Función que revela la grilla cuando todo está listo
+                    function showGrid() {
+                        container.style.opacity = '1';
+                        container.querySelectorAll('.grid-item').forEach((item, index) => {
+                            setTimeout(() => {
+                                item.classList.add('loaded');
+                            }, index * 50); // Efecto cascada
+                        });
+                        btn.disabled = false;
+                        if(icon) icon.classList.remove('spinning');
+                    }
+
+                    // Si por algún motivo no hay fotos ni videos, mostramos igual para no trabar
+                    if (mediaElements.length === 0) {
+                        showGrid();
+                        return;
+                    }
+
+                    // Revisar cada archivo
+                    mediaElements.forEach(media => {
+                        // Lógica para IMÁGENES
+                        if (media.tagName.toLowerCase() === 'img') {
+                            if (media.complete) {
+                                checkAllLoaded();
+                            } else {
+                                media.addEventListener('load', checkAllLoaded);
+                                media.addEventListener('error', checkAllLoaded); // Si falla, que siga igual
+                            }
+                        } 
+                        // Lógica para VIDEOS
+                        else if (media.tagName.toLowerCase() === 'video') {
+                            // readyState >= 3 significa que tiene suficientes datos para reproducirse
+                            if (media.readyState >= 2) { 
+                                checkAllLoaded();
+                            } else {
+                                media.addEventListener('loadeddata', checkAllLoaded);
+                                media.addEventListener('error', checkAllLoaded);
+                            }
                         }
                     });
 
                     function checkAllLoaded() {
                         loadedCount++;
-                        if (loadedCount === images.length) {
-                            // 5. Mostrar todo junto con efecto fade-in
-                            container.style.opacity = '1';
-                            
-                            // Aplicamos la clase de animación a cada item con un leve delay
-                            container.querySelectorAll('.grid-item').forEach((item, index) => {
-                                setTimeout(() => {
-                                    item.classList.add('loaded');
-                                }, index * 50); // Efecto cascada
-                            });
-
-                            // Limpiar botón
-                            btn.disabled = false;
-                            icon.classList.remove('spinning');
+                        if (loadedCount === mediaElements.length) {
+                            showGrid();
                         }
                     }
-                }, 400);
+                }, 400); // Pequeño delay de la transición de salida
             })
             .catch(error => {
                 console.error("Error al barajar:", error);
                 btn.disabled = false;
+                if(icon) icon.classList.remove('spinning');
+                container.style.opacity = '1'; // Rescate visual si falla el servidor
             });
     });
     </script>

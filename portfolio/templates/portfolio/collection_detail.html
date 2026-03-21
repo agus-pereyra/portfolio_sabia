@@ -47,7 +47,7 @@
 
     <section class="photo-story-grid">
         {% for video in collection.videos.all %}
-            <div class="photo-item video-item media-item" 
+            <div id="vid-{{ video.id }}" class="photo-item video-item media-item" 
                 data-type="video" 
                 data-url="{{ video.file.url }}"
                 onclick="openModal({{ forloop.counter0 }})">
