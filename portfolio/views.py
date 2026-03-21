@@ -1,4 +1,4 @@
-from .models import Collaborator, Collection, Picture, Video
+from .models import Collaborator, Collection, Picture
 from django.views.generic import DetailView, ListView
 from django.shortcuts import render
 
@@ -21,6 +21,10 @@ def collections_list(request):
         'active_year': year,
     })
 
+def get_random_pictures(request):
+    random_pictures = Picture.objects.all().order_by('?')[:15]
+    return render(request, 'portfolio/includes/picture_grid_items.html', {'random_pictures': random_pictures})
+
 class CollectionDetailView(DetailView):
     model = Collection
     template_name = 'portfolio/collection_detail.html'
@@ -40,6 +44,7 @@ class HomeView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['collections_all'] = Collection.objects.all().order_by('-captured_at')
+        context['random_pictures'] = Picture.objects.all().order_by('?')[:12]
         return context
 
     def get_queryset(self):

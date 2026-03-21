@@ -33,13 +33,30 @@ class PictureInline(admin.TabularInline):
     readonly_fields = ('id_collection', 'width', 'height', 'preview')
     fields = ('id_collection', 'image', 'width', 'height', 'preview')
     classes = ('collapse', 'open')
-    # per_page = 5
-    show_change_link = True
+    list_display = ('id_collection', 'collection.slug')
 
     def preview(self, obj):
         if obj.image:
             return format_html('<img src="{}" style="width: 100px; height: auto;" />', obj.image.url)
         return ""
+    
+@admin.register(Picture)
+class PictureAdmin(admin.ModelAdmin):
+    list_display = ('id', 'id_collection', 'get_collection_slug')
+    
+    list_filter = ('id_collection',)
+    
+    search_fields = ('id_collection__title', 'id_collection__slug')
+
+    def get_collection_slug(self, obj):
+        return obj.collection.slug if obj.id_collection else "⚠️ SIN COLECCIÓN"
+    get_collection_slug.short_description = 'Collection Slug'
+
+
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'id_collection')
+    list_filter = ('id_collection',)
     
 class VideoInline(admin.TabularInline):
     model = Video
@@ -47,8 +64,7 @@ class VideoInline(admin.TabularInline):
     readonly_fields = ('id_collection', 'width', 'height', 'duration', 'preview')
     fields = ('id_collection', 'file', 'width', 'height', 'duration', 'preview')
     classes = ('collapse', 'open')
-    # per_page = 5
-    show_change_link = True
+    list_display = ('id_collection', 'collection.slug')
 
     def preview(self, obj):
         if obj.file:
@@ -63,7 +79,6 @@ class VideoInline(admin.TabularInline):
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)} # slug automático mientras se escribe el título
-    list_display = ('title', 'slug', 'is_featured', 'get_photos_count', 'get_videos_count', 'captured_at', 'created_at')
     search_fields = ('title',)
     inlines = [PictureInline, VideoInline]
     filter_horizontal = ('collaborators',)
@@ -158,6 +173,3 @@ class CollaboratorAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'role', 'genre')
     list_filter = ('genre', 'role')
     classes = ('collapse', 'open')
-
-admin.site.register(Picture)
-admin.site.register(Video)
