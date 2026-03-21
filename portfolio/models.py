@@ -1,12 +1,13 @@
 from django.db import models
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 import datetime 
 from moviepy import VideoFileClip
 class Collaborator(models.Model):
     first_name = models.CharField(max_length=20, verbose_name='Nombre/s')
-    last_name = models.CharField(max_length=30, verbose_name='Apellido')
-    role = models.CharField(max_length=100, blank=True, null=True, verbose_name='Rol (ej. Fotógrafo/a, Maquillador/a, etc)')
-    contact = models.URLField(blank=True, null=True, verbose_name='Contacto (URL ej. Instagram, Portfolio, etc)')
+    last_name = models.CharField(max_length=30, verbose_name='Apellido/s')
+    role = models.CharField(max_length=100, blank=True, null=True, verbose_name='Rol', help_text='(ej. Fotógrafo/a, Maquillador/a, etc)')
+    contact = models.URLField(blank=True, null=True, verbose_name='Contacto', help_text='(URL ej. Instagram, Portfolio, etc)')
     
     class Gender(models.TextChoices):
         MASCULINE = 'M', 'Masculino'
@@ -27,21 +28,29 @@ class Collection(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
 
     description = models.TextField(blank=True, null=True, verbose_name='Descripción')
-    collaborators = models.ManyToManyField(Collaborator, blank=True, related_name='collections')
+    collaborators = models.ManyToManyField(Collaborator, blank=True, related_name='collections', verbose_name='Colaboladores')
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='Fecha de publicación')
     captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
 
     is_featured = models.BooleanField(verbose_name='Destacar', default=False, help_text='(Mostrar en Home)')
 
-    cover =  models.ForeignKey('Picture', on_delete=models.SET_NULL, null=True, blank=True, related_name='cover')
+    cover =  models.ForeignKey('Picture', on_delete=models.SET_NULL, null=True, blank=True, related_name='cover', verbose_name='Portada')
 
-    cover_video = models.ForeignKey('Video', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    cover_video = models.ForeignKey('Video', null=True, blank=True, on_delete=models.SET_NULL, related_name='+', verbose_name='Portada Animada', help_text='(Previsualización de video como portada)')
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+    def clean(self):
+        # Validamos que no existan ambos al mismo tiempo
+        if self.cover and self.cover_video:
+            raise ValidationError(
+                "Una colección no puede tener foto y video de portada al mismo tiempo. "
+                "Por favor, elige solo uno."
+            )
 
     def get_photos_count(self):
         return self.pictures.count()
@@ -63,19 +72,19 @@ class Collection(models.Model):
 class Picture(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Título')
 
-    collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, blank=True, null=True, related_name="pictures")
+    collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, blank=True, null=True, related_name="pictures", verbose_name='Album de Pertenencia')
     image = models.ImageField(upload_to='portfolio/images/', 
                               verbose_name='Archivo de la Imágen',
                               width_field='width',
                               height_field='height')
 
-    width = models.IntegerField(editable=False, null=True)
-    height = models.IntegerField(editable=False, null=True)
+    width = models.IntegerField(editable=False, null=True, verbose_name='Ancho', help_text='px')
+    height = models.IntegerField(editable=False, null=True, verbose_name='Alto', help_text='px')
 
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
     captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
     
-    id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True) 
+    id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True, verbose_name='ID') 
 
     def save(self, *args, **kwargs):
         if self.collection:
@@ -100,28 +109,34 @@ class Picture(models.Model):
 class Video(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Título')
 
-    collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, blank=True, null=True, related_name="videos")
+    collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, blank=True, null=True, related_name="videos", verbose_name='Album de Pertenencia')
     file = models.FileField(upload_to='portfolio/videos/', verbose_name='Archivo del Video')
     
     duration = models.DurationField(null=True, blank=True, help_text='HH:MM:SS', verbose_name='Duración')
+    width = models.IntegerField(editable=False, null=True, verbose_name='Ancho', help_text='px')
+    height = models.IntegerField(editable=False, null=True, verbose_name='Alto', help_text='px')
 
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
     captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
 
-    id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True) 
+    id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True, verbose_name='ID') 
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         
-        if self.file and not self.duration:
+        if self.file and (not self.duration or not self.width or not self.height):
             try:
                 clip = VideoFileClip(self.file.path)
-                
-                self.duration = datetime.timedelta(seconds=clip.duration)
+                if not self.duration:
+                    self.duration = datetime.timedelta(seconds=clip.duration)
+
+                if not self.width or not self.height:
+                    self.width = clip.size[0]
+                    self.height = clip.size[1]
                 
                 clip.close()
                 
-                super().save(update_fields=['duration'])
+                super().save(update_fields=['duration', 'width', 'height'])
             except Exception as e:
                 print(f"Error extrayendo duración del video: {e}")
 

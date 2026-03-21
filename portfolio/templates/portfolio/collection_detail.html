@@ -47,19 +47,23 @@
 
     <section class="photo-story-grid">
         {% for video in collection.videos.all %}
-            <div class="photo-item video-item">
-                <video autoplay muted loop playsinline width="100%" style="display: block;">
+            <div class="photo-item video-item media-item" 
+                data-type="video" 
+                data-url="{{ video.file.url }}"
+                onclick="openModal({{ forloop.counter0 }})">
+                <video autoplay muted loop playsinline width="100%" style="display: block; cursor: pointer;">
                     <source src="{{ video.file.url }}" type="video/mp4">
-                    Tu navegador no soporta la reproducción de videos.
                 </video>
             </div>
         {% endfor %}
 
         {% for pic in collection.pictures.all %}
-            <div class="photo-item">
+            <div class="photo-item media-item" 
+                data-type="image" 
+                data-url="{{ pic.image.url }}"
+                onclick="openModal({{ forloop.counter0|add:collection.videos.count }})">
                 <img src="{{ pic.image.url }}" 
                     alt="{{ pic.title }}" 
-                    onclick="openModal({{ forloop.counter0 }})" 
                     style="cursor: pointer;">
             </div>
         {% endfor %}
@@ -74,7 +78,6 @@
 
     <div class="modal-content" onclick="event.stopPropagation()">
         <div id="image-viewer" class="image-viewer">
-            <img id="modalImg" src="" alt="" class="modal-image">
         </div>
 
         <div class="modal-details">
@@ -86,9 +89,19 @@
 </div>
 
 <script>
-const photos = [
+const mediaList = [
+    {% for video in collection.videos.all %}
+    {
+        type: "video",
+        url: "{{ video.file.url }}",
+        title: "{{ video.title|default:'' }}",
+        date: "{{ collection.captured_at|date:'M Y'|upper }}",
+        res: "{{ video.width }}x{{ video.height }} px"
+    },
+    {% endfor %}
     {% for pic in collection.pictures.all %}
     {
+        type: "image",
         url: "{{ pic.image.url }}",
         title: "{{ pic.title|default:'' }}",
         date: "{{ collection.captured_at|date:'M Y'|upper }}",
@@ -98,114 +111,122 @@ const photos = [
 ];
 
 let currentIndex = 0;
-let viewer, modalImg;
-let isZoomActive = false; // Estado del zoom
+let isZoomActive = false;
+
+// Capturamos el contenedor una sola vez para eficiencia
+const getViewer = () => document.getElementById("image-viewer");
 
 function openModal(index) {
     const modal = document.getElementById("imageModal");
     modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
     currentIndex = index;
     updateModalContent();
-    document.getElementById("imageModal").style.display = "flex";
-    document.body.style.overflow = "hidden";
-    
-    setTimeout(initZoomEffect, 10); 
 }
 
 function updateModalContent() {
-    const photo = photos[currentIndex];
-    modalImg = document.getElementById("modalImg");
-    viewer = document.getElementById("image-viewer");
+    const media = mediaList[currentIndex];
+    const viewer = getViewer();
     const modalTitle = document.getElementById("modalTitle");
 
-    // Resetear estado antes de cambiar de foto
+    // Resetear estados
     deactivateZoom();
+    viewer.innerHTML = "";
 
-    if (modalImg) modalImg.style.transformOrigin = 'center center';
-    
-    modalImg.src = photo.url;
-    modalImg.style.opacity = "1";
-
-    if (photo.title && photo.title.trim() !== "") {
-        modalTitle.innerText = photo.title;
-        modalTitle.style.display = "block";
+    if (media.type === "video") {
+        const videoElem = document.createElement("video");
+        videoElem.src = media.url;
+        videoElem.className = "modal-media";
+        videoElem.controls = true;
+        videoElem.autoplay = true;
+        videoElem.style.pointerEvents = "auto"; 
+        viewer.appendChild(videoElem);
+        viewer.style.cursor = "default";
     } else {
-        modalTitle.style.display = "none";
+        const imgElem = document.createElement("img");
+        imgElem.id = "modalImg"; 
+        imgElem.src = media.url;
+        imgElem.className = "modal-media";
+        viewer.appendChild(imgElem);
+        viewer.style.cursor = "zoom-in";
+        
+        // Inicializar zoom solo para imágenes
+        initZoomEffect();
     }
 
-    document.getElementById("modalDate").innerText = photo.date;
-    document.getElementById("modalRes").innerText = "Resolución: " + photo.res;
-}
-
-function initZoomEffect() {
-    viewer = document.getElementById("image-viewer");
-    if (!viewer) return;
-    
-    // 1. Clic para activar/desactivar
-    viewer.addEventListener("click", toggleZoom);
-    
-    // 2. Movimiento para panear
-    viewer.addEventListener("mousemove", (e) => {
-        if (isZoomActive) moveZoomOrigin(e);
-    });
-}
-
-function toggleZoom(e) {
-    // Evitamos que el clic cierre el modal
-    e.stopPropagation();
-
-    if (!isZoomActive) {
-        activateZoom(e);
-    } else {
-        deactivateZoom();
-    }
-}
-
-function activateZoom(e) {
-    isZoomActive = true;
-    modalImg.classList.add("is-zoomed");
-    viewer.classList.add("viewing-zoom");
-    
-    // Mover el origen al punto donde se hizo clic inicialmente
-    moveZoomOrigin(e);
-}
-
-function deactivateZoom() {
-    isZoomActive = false;
-    if (modalImg) {
-        modalImg.classList.remove("is-zoomed");
-    }
-    if (viewer) {
-        viewer.classList.remove("viewing-zoom");
-    }
-}
-
-function moveZoomOrigin(e) {
-    const rect = viewer.getBoundingClientRect();
-    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
-
-    modalImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+    modalTitle.innerText = media.title || "";
+    modalTitle.style.display = media.title ? "block" : "none";
+    document.getElementById("modalDate").innerText = media.date;
+    document.getElementById("modalRes").innerText = "Resolución: " + media.res;
 }
 
 function changeImage(step, event) {
     if (event) event.stopPropagation();
     currentIndex += step;
-    if (currentIndex >= photos.length) currentIndex = 0;
-    if (currentIndex < 0) currentIndex = photos.length - 1;
+    if (currentIndex >= mediaList.length) currentIndex = 0;
+    if (currentIndex < 0) currentIndex = mediaList.length - 1;
     updateModalContent();
 }
 
 function closeModal() {
+    const viewer = getViewer();
+    viewer.innerHTML = ""; 
     document.getElementById("imageModal").style.display = "none";
     document.body.style.overflow = "auto";
     deactivateZoom();
-    if (modalImg) modalImg.style.transformOrigin = 'center center';
+}
+
+function initZoomEffect() {
+    const viewer = getViewer();
+    const modalImg = document.getElementById("modalImg");
+    if (!modalImg) return;
+    
+    viewer.onclick = (e) => toggleZoom(e);
+    viewer.onmousemove = (e) => {
+        if (isZoomActive) moveZoomOrigin(e);
+    };
+}
+
+function toggleZoom(e) {
+    e.stopPropagation();
+    if (mediaList[currentIndex].type === 'video') return; // No zoom en videos
+    if (!isZoomActive) activateZoom(e);
+    else deactivateZoom();
+}
+
+function activateZoom(e) {
+    const modalImg = document.getElementById("modalImg");
+    const viewer = getViewer();
+    if (!modalImg) return;
+    
+    isZoomActive = true;
+    modalImg.classList.add("is-zoomed");
+    viewer.classList.add("viewing-zoom");
+    moveZoomOrigin(e);
+}
+
+function deactivateZoom() {
+    isZoomActive = false;
+    const modalImg = document.getElementById("modalImg");
+    const viewer = getViewer();
+    if (modalImg) modalImg.classList.remove("is-zoomed");
+    if (viewer) viewer.classList.remove("viewing-zoom");
+}
+
+function moveZoomOrigin(e) {
+    const modalImg = document.getElementById("modalImg");
+    const viewer = getViewer();
+    if (!modalImg || !isZoomActive) return;
+
+    const rect = viewer.getBoundingClientRect();
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+    modalImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
 }
 
 document.addEventListener('keydown', function(e) {
     const modal = document.getElementById("imageModal");
-    if (modal.style.display === "flex") {
+    if (modal && modal.style.display === "flex") {
         if (e.key === "ArrowRight") changeImage(1);
         if (e.key === "ArrowLeft") changeImage(-1);
         if (e.key === "Escape") closeModal();
