@@ -25,15 +25,14 @@ class CollectionForm(forms.ModelForm):
         
     def clean_captured_at(self):
         data = self.cleaned_data['captured_at']
-        # Si por alguna razón llega solo el objeto fecha (que ya tiene día), 
-        # Django lo maneja bien. El problema es la conversión del texto.
         return data
 
 class PictureInline(admin.TabularInline):
     model = Picture
     extra = 0
-    readonly_fields = ('id_collection', 'preview')
-    fields = ('id_collection', 'image', 'preview')
+    readonly_fields = ('id_collection', 'width', 'height', 'preview')
+    fields = ('id_collection', 'image', 'width', 'height', 'preview')
+    classes = ('collapse',)
 
     def preview(self, obj):
         if obj.image:
@@ -43,8 +42,9 @@ class PictureInline(admin.TabularInline):
 class VideoInline(admin.TabularInline):
     model = Video
     extra = 0
-    readonly_fields = ('id_collection', 'preview')
-    fields = ('id_collection', 'file', 'preview')
+    readonly_fields = ('id_collection', 'width', 'height', 'duration', 'preview')
+    fields = ('id_collection', 'file', 'width', 'height', 'duration', 'preview')
+    classes = ('collapse',)
 
     def preview(self, obj):
         if obj.file:
@@ -65,6 +65,27 @@ class CollectionAdmin(admin.ModelAdmin):
     filter_horizontal = ('collaborators',)
 
     form = CollectionForm
+
+    list_display = ('title', 'captured_at', 'is_featured', 'get_photos_count')
+    
+    list_editable = ('is_featured',)
+    
+    list_filter = ('is_featured', 'captured_at')
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'slug', 'description', 'captured_at', 'is_featured')
+        }),
+        ('Portadas (Elegir solo una)', {
+            'classes': ('collapse',),
+            'fields': ('cover', 'cover_video'),
+            'description': 'Si seleccionas una foto de portada, asegúrate de que el video de portada esté vacío.'
+        }),
+        ('Carga de Archivos', {
+            'classes': ('collapse',),
+            'fields': ('upload_multiple_pictures', 'upload_multiple_videos'),
+        }),
+    )
 
     def get_photos_count(self, obj):
         return obj.get_photos_count()
@@ -101,7 +122,7 @@ class CollectionAdmin(admin.ModelAdmin):
                 )
                 new_pictures.append(new_pic)
             
-            if not obj.cover and new_pictures:
+            if not obj.cover and not obj.cover_video and new_pictures:
                 obj.cover = new_pictures[0]
                 obj.save()
         
@@ -118,7 +139,7 @@ class CollectionAdmin(admin.ModelAdmin):
                 )
                 new_videos.append(new_vid)
             
-            if not obj.cover_video and new_videos:
+            if not obj.cover_video and not obj.cover and new_videos:
                 obj.cover_video = new_videos[0]
                 obj.save()
 
@@ -132,6 +153,7 @@ class CollectionAdmin(admin.ModelAdmin):
 class CollaboratorAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'role', 'genre')
     list_filter = ('genre', 'role')
+    classes = ('collapse',)
 
 admin.site.register(Picture)
 admin.site.register(Video)

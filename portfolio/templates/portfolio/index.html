@@ -25,10 +25,10 @@
                             <div class="collection-image-wrapper">
                                 {% if col.cover_video %}
                                     <video autoplay muted loop playsinline width="100%" height="100%" style="object-fit: cover;">
-                                        <source src="{{ col.cover_video.file.url }}" type="video/mp4">
+                                        <source src="{{ col.cover_video.file.url }}" type="video/mp4", loading="eager">
                                     </video>
                                 {% elif col.cover %}
-                                    <img src="{{ col.cover.image.url }}" alt="{{ col.title }}">
+                                    <img src="{{ col.cover.image.url }}" alt="{{ col.title }}", loading="eager">
                                 {% else %}
                                     <div style="height: 100%; width: 100%; background: #f4f4f4;"></div>
                                 {% endif %}
@@ -43,6 +43,7 @@
                                     {% elif col.get_videos_count > 0 %}
                                         {{ col.get_videos_count }} Video{{ col.get_videos_count|pluralize:"s" }}
                                     {% endif %}
+                                    <div class="slider-drag-layer"></div>
                                 </div>
                             </div>
                         </a>
@@ -62,7 +63,6 @@
         </div>
     </main>
 
-    <!-- Swiper Assets (Asegurate de que estén dentro del block pero al final) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -71,24 +71,38 @@
         const swiper = new Swiper('.collections-slider', {
             slidesPerView: 'auto',
             centeredSlides: true,
-            spaceBetween: 50,
+            spaceBetween: 100,
             loop: true,
             
-            // Forzamos el arranque desde el segundo elemento para asegurar el renderizado inicial
-            initialSlide: 1, 
-            
+            // loopedSlides: 3,
+            // watchSlidesProgress: true,
+
+            loopedSlides: 8, 
+            // loopAdditionalSlides: 5,
+            watchSlidesProgress: true,
+            convertToPopover: false,
+
+            keyboard: true,
             grabCursor: true,
-            speed: 800, 
+
+            touchReleaseOnEdges: true ,
+            edgeSwipeThreshold: 20,
             
+            speed: 3500,
             autoplay: {
                 delay: 3000,
                 disableOnInteraction: false,
-                pauseOnMouseEnter: true, // Importante para la UX
+                pauseOnMouseEnter: true,
             },
 
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
+            },
+
+            effect: 'coverflow',
+            coverflowEffect: {
+                slideShadows: false,
             },
         });
     });

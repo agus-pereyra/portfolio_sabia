@@ -8,6 +8,10 @@ class MultipleFileInput(ClearableFileInput):
 class MultipleImageField(forms.ImageField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("widget", MultipleFileInput())
+
+        kwargs.setdefault("validators", [
+            FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'webp'])
+        ])
         super().__init__(*args, **kwargs)
 
     def clean(self, data, initial=None):
@@ -22,7 +26,6 @@ class MultipleVideoField(forms.FileField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("widget", MultipleFileInput())
         
-        # Agregamos validación de seguridad para que solo suban videos
         kwargs.setdefault("validators", [
             FileExtensionValidator(allowed_extensions=['mp4', 'mov', 'avi', 'webm'])
         ])

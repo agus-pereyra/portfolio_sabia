@@ -230,6 +230,14 @@ h1, h2, .brand {
     cursor: pointer;
 }
 
+.photo-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover; /* Para que rellene bien su espacio en la grilla */
+    aspect-ratio: auto; 
+}
+
 .photo-item:hover img {
     transform: scale(1.03);
     opacity: 0.9;
@@ -393,6 +401,43 @@ h1, h2, .brand {
     color: var(--text-color);
 }
 
+.view-all-link {
+    font-weight: 600 !important;
+    color: var(--text-color) !important;
+    letter-spacing: 1px;
+    border-bottom: none !important; /* Quitamos el borde que tienen los otros links */
+    margin-bottom: 5px;
+    font-size: 1.1rem !important;
+}
+
+.nav-arrow-mini {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.view-all-link:hover .nav-arrow-mini {
+    transform: translateX(5px);
+}
+
+.side-menu-divider {
+    height: 1px;
+    background-color: #f0f0f0;
+    margin: 15px 0 25px auto;
+    width: 40%; /* Línea sutil a la derecha */
+}
+
+/* Ajuste para que los links normales no se vean tan pesados al lado del 'Ver todos' */
+.side-nav-content a:not(.view-all-link) {
+    opacity: 0.7;
+    font-size: 1rem;
+}
+
+.side-nav-content a:not(.view-all-link):hover {
+    opacity: 1;
+}
+
 /* FOOTER */
 
 .main-footer {
@@ -439,9 +484,9 @@ h1, h2, .brand {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(5px);
-
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .modal-content {
@@ -453,6 +498,7 @@ h1, h2, .brand {
     justify-content: center;
     position: relative;
     z-index: 2050;
+    cursor: default;
 }
 
 .image-viewer {
@@ -462,31 +508,39 @@ h1, h2, .brand {
     width: fit-content;
     height: fit-content;
     overflow: hidden;
-    cursor: zoom-in;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     background-color: transparent;
     line-height: 0;
 }
 
-.modal-image {
+.image-viewer img {
+    cursor: zoom-in;
+}
+
+.image-viewer video {
+    cursor: default;
+    border-radius: 4px;
+    background: #000;
+}
+
+.modal-media {
     display: block;
     max-width: 100%;
     max-height: 80vh;
     width: auto;
     height: auto;
-    transform-origin: center center;
+    margin: 0 auto;
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    pointer-events: none;
-    vertical-align: middle; /* Elimina el gap inferior */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    pointer-events: auto !important;
 }
 
-/* ---  ZOOM MODAL --- */
-
-.modal-image.is-zoomed {
-    transform: scale(3); /* zoom */
+.modal-media.is-zoomed {
+    transform: scale(3);
+    cursor: zoom-out;
 }
 
-.image-viewer.viewing-zoom { /* cursor en zoom */
+.image-viewer.viewing-zoom {
     cursor: zoom-out;
 }
 
@@ -748,7 +802,8 @@ h1, h2, .brand {
 
 .collections-slider {
     width: 100%;
-    padding: 80px 0 20px 0 !important;
+    /* padding: 80px 0 20px 0 !important; */
+    padding-top: 80px;
     overflow: hidden;
     position: relative;
     display: block; /* Aseguramos que sea bloque */
@@ -757,20 +812,22 @@ h1, h2, .brand {
 /* Forzamos a que el wrapper se comporte estrictamente como pide Swiper */
 .collections-slider .swiper-wrapper {
     display: flex !important;
-    align-items: stretch !important; /* Para que todas midan igual de alto */
+    /* align-items: stretch !important; Para que todas midan igual de alto */
     box-sizing: content-box !important;
 }
 
 /* Reglas estrictas para cada carta */
 .collections-slider .swiper-slide {
     width: 450px !important; 
-    flex-shrink: 0 !important; /* CRÍTICO: Evita que el navegador comprima las fotos, rompiendo el bucle */
+    /* flex-shrink: 0 !important; */
     height: auto;
     display: block !important; 
     opacity: 0.3; 
     transform: scale(0.85); 
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
     box-sizing: border-box;
+    align-items: center;
+    flex-direction: column;
 }
 
 /* Solo la del medio brilla y crece */
@@ -829,6 +886,37 @@ h1, h2, .brand {
 .swiper-button-next:after, 
 .swiper-button-prev:after {
     font-size: 18px !important;
+}
+
+.swiper-slide-duplicate {
+    /* Mantiene la consistencia visual en los clones */
+    transition: none !important; 
+}
+
+.collection-image-wrapper {
+    position: relative; /* Necesario para posicionar la capa */
+    overflow: hidden;
+}
+
+.slider-drag-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10; /* Por encima del video y la imagen */
+    background: transparent;
+    cursor: grab; /* Forzamos el cursor de la mano */
+}
+
+.slider-drag-layer:active {
+    cursor: grabbing; /* Cursor de "agarrar" fuerte al hacer click */
+}
+
+.collection-image-wrapper video, 
+.collection-image-wrapper img {
+    pointer-events: none; 
+    user-select: none;
 }
 
 /* --- ARCHIVE SECTION --- */
