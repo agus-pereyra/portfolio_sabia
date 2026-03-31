@@ -1,0 +1,37 @@
+{% if widget.value %}
+  <label class="cover-option {% if widget.selected %}cover-option--selected{% endif %}">
+    <input type="radio"
+           name="{{ widget.name }}"
+           value="{{ widget.value }}"
+           {% if widget.selected %}checked{% endif %}
+           {% for k, v in widget.attrs.items %}{{ k }}="{{ v }}" {% endfor %}>
+
+    {% if widget.thumb_url and widget.thumb_type == 'video' %}
+      {# Video: autoplay silencioso en loop como GIF #}
+      <video class="cover-thumb"
+             src="{{ widget.thumb_url }}"
+             autoplay muted loop playsinline
+             preload="auto">
+      </video>
+      <span class="cover-video-badge">▶</span>
+
+    {% elif widget.thumb_url %}
+      <img src="{{ widget.thumb_url }}" class="cover-thumb" alt="{{ widget.label }}">
+
+    {% else %}
+      <span class="cover-no-thumb">{{ widget.label }}</span>
+    {% endif %}
+
+  </label>
+
+{% else %}
+  {# Opción vacía = "Ninguna" #}
+  <label class="cover-option cover-option--none {% if widget.selected %}cover-option--selected{% endif %}">
+    <input type="radio"
+           name="{{ widget.name }}"
+           value=""
+           {% if widget.selected %}checked{% endif %}
+           {% for k, v in widget.attrs.items %}{{ k }}="{{ v }}" {% endfor %}>
+    <span class="cover-none-label">✕ Ninguna</span>
+  </label>
+{% endif %}

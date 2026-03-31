@@ -1,15 +1,13 @@
-<!-- PARTIAL HTML -->
 {% for item in random_media %}
     <div class="grid-item {% if forloop.counter|divisibleby:3 %}tall{% elif forloop.counter|divisibleby:7 %}wide{% endif %}">
-        
-        {% if item.media_type == 'picture' %}
-            <img src="{{ item.image.url }}" alt="Visual Archive" loading="lazy">
+        {% if item.type == 'image' %}
+            <img src="{{ item.image_file.url }}" alt="Visual Archive" loading="lazy">
             <a href="{% url 'collection_detail' item.collection.slug %}#pic-{{ item.id }}" class="grid-item-overlay">
                 <span>View Details</span>
             </a>
             
-        {% elif item.media_type == 'video' %}
-            <video src="{{ item.file.url }}" autoplay loop muted playsinline preload="metadata"></video>
+        {% elif item.type == 'video' %}
+            <video src="{{ item.video_file.url }}" autoplay loop muted playsinline preload="metadata"></video>
             <a href="{% url 'collection_detail' item.collection.slug %}#vid-{{ item.id }}" class="grid-item-overlay">
                 <span>View Details</span>
             </a>

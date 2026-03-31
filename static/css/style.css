@@ -13,12 +13,35 @@
     --font-code: 'IBM Plex Mono', monospace;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* 100% del alto de la ventana del navegador */
+}
+
 body {
     background-color: var(--main-bg);
     color: var(--text-color);
     font-family: var(--font-sans);
     margin: 0;
     -webkit-font-smoothing: antialiased;
+
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-grow: 1; 
+    /* Si tenías algún margen inferior por defecto que causaba el problema, lo anulamos */
+    margin-bottom: 0; 
+}
+
+video {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    background-color: transparent;
 }
 
 /* FONT */
@@ -73,6 +96,18 @@ h1, h2, .brand {
     font-size: 2.8rem;
     letter-spacing: 1px;
     text-transform: uppercase;
+}
+
+.home-intro h1 a {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block; 
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.home-intro h1 a:hover {
+    transform: scale(1.01);
+    opacity: 0.7;
 }
 
 .home-intro p {
@@ -132,6 +167,10 @@ h1, h2, .brand {
 }
 
 .collection-card:hover img {
+    transform: scale(1.02);
+}
+
+.collection-card:hover video {
     transform: scale(1.02);
 }
 
@@ -611,7 +650,7 @@ h1, h2, .brand {
     position: sticky;
     top: 0;
     width: 100%;
-    height: 50vh;
+    height: 40vh;
     z-index: 1;
     min-height: 180px;
     overflow: hidden;
@@ -681,6 +720,50 @@ h1, h2, .brand {
     margin: 0;
     text-transform: lowercase;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* HERO CONTENT ANIMATION */
+
+.hero-content h1, 
+.hero-content h2 {
+    /* 1. Base sólida: Esto garantiza que el texto SIEMPRE sea visible y clarito */
+    color: transparent;
+    background-color: rgba(255, 255, 255, 0.40); 
+    
+    /* Variables para el mouse (arrancan escondidas fuera de la pantalla) */
+    --mouse-x: -500px;
+    --mouse-y: -500px;
+
+    background-image: 
+        radial-gradient(
+            circle 120px at var(--mouse-x) var(--mouse-y), 
+            rgba(255, 255, 255, 1) 0%, 
+            transparent 100%
+        ),
+        linear-gradient(
+            110deg, 
+            transparent 0%, 
+            transparent 40%, 
+            rgba(255, 255, 255, 1) 50%, 
+            transparent 60%, 
+            transparent 100%
+        );
+    
+    background-size: 100% 100%, 200% 100%;
+    background-repeat: no-repeat;
+    
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    animation: shine 10s infinite;
+}
+
+@keyframes shine {
+    /* animación */
+    0% { background-position: 0 0, 200% center; }
+    85% { background-position: 0 0, -200% center; }
+    /* descanso */
+    100% { background-position: 0 0, -200% center; }
 }
 
 /* MAIN (separado de HERO para posición relativa vs sticky) */
@@ -833,45 +916,37 @@ h1, h2, .brand {
     }
 }
 
-/* --- HOME COLLECTIONS SLIDER (ROBUSTO) --- */
+/* --- HOME COLLECTIONS SLIDER  --- */
 
 .collections-slider {
     width: 100%;
-    padding-top: 80px;
-    overflow: hidden;
+    padding-top: 100px;
+    overflow: visible;
     position: relative;
-    display: block; /* Aseguramos que sea bloque */
+    display: block;
 }
 
-/* Forzamos a que el wrapper se comporte estrictamente como pide Swiper */
 .collections-slider .swiper-wrapper {
     display: flex !important;
-    /* align-items: stretch !important; Para que todas midan igual de alto */
     box-sizing: content-box !important;
 }
 
-/* Reglas estrictas para cada carta */
 .collections-slider .swiper-slide {
     width: 450px !important; 
-    /* flex-shrink: 0 !important; */
     height: auto;
     display: block !important; 
     opacity: 0.3; 
-    transform: scale(0.85); 
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+    transition-property: transform, opacity;
     box-sizing: border-box;
     align-items: center;
     flex-direction: column;
 }
 
-/* Solo la del medio brilla y crece */
 .collections-slider .swiper-slide-active {
     opacity: 1 !important;
-    transform: scale(1.05) !important;
     z-index: 10;
 }
 
-/* Ajuste del contenedor de la imagen */
 .collections-slider .collection-image-wrapper {
     width: 100%;
     height: 600px;
@@ -889,10 +964,9 @@ h1, h2, .brand {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block; /* Quita el espacio fantasma debajo de la imagen */
+    display: block; 
 }
 
-/* Quita el comportamiento flex viejo de la tarjeta para evitar choques */
 .collections-slider .collection-card {
     display: block !important; 
     text-decoration: none;
@@ -1148,15 +1222,15 @@ h1, h2, .brand {
 /* PICTURES GRID */
 
 .random-grid-section {
-    padding: 100px 0;
+    padding-top: 50px;
+    padding-bottom: 40px;
     background-color: #fff;
     width: 100vw;
     position: relative;
     left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    transform: translateX(-50%); /* El método moderno y limpio */
     margin-top: -60px;
+    margin-bottom: 0;
 }
 
 .grid-header {
@@ -1186,13 +1260,29 @@ h1, h2, .brand {
 }
 
 /* Estado inicial (oculto) */
-.grid-item {
+/* .grid-item {
     display: inline-block;
     margin-bottom: 15px;
     width: 100%;
     position: relative;
     overflow: hidden;
     border-radius: 4px;
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+} */
+
+.grid-item {
+    display: block; /* Cambiamos inline-block por block */
+    break-inside: avoid; /* Evita que las fotos se partan a la mitad entre columnas */
+    -webkit-column-break-inside: avoid;
+    margin-bottom: 15px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    
+    /* Tus animaciones hermosas quedan intactas */
     opacity: 0;
     transform: translateY(30px) scale(0.95);
     transition: opacity 0.6s ease, transform 0.6s ease;
@@ -1224,7 +1314,7 @@ h1, h2, .brand {
     left: 0; 
     width: 100%; 
     height: 100%;
-    background: rgba(0, 0, 0, 0.4); /* 0.4 lo hace un poco más oscuro y legible */
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1235,8 +1325,8 @@ h1, h2, .brand {
     font-size: 0.75rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    text-decoration: none; /* Evita que el link se subraye */
-    z-index: 10; /* CRUCIAL: Lo obliga a estar por encima de la foto/video */
+    text-decoration: none;
+    z-index: 10;
 }
 
 .grid-item:hover .grid-item-overlay {
@@ -1306,3 +1396,4 @@ html {
         transform: scale(1);
     }
 }
+
