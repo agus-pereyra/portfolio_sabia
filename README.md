@@ -1,7 +1,10 @@
 ## FALTA
 
-- Hacer responsive
-- Orden manual de fotos y videos
-- Mejorar About
-- Configurar Admin/Staff
-- En Index, que el efecto Parallax Scroll al bajar a "Gallery" (ALBUMS) frena en top=0 y el GALLERY lo tapa 
+- [ ] Hacer responsive
+- [x] Orden manual de fotos y videos
+- [ ] Mejorar About
+- [ ] Configurar Admin/Staff
+- [x] Index: Parallax Scroll entre Gallery y Albums.
+- [ ] Orden manual albums destacados
+- [ ] Conectar con AWS 3
+- [ ] Enlazar Host (al menos prueba gratuita)

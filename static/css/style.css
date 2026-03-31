@@ -949,7 +949,7 @@ h1, h2, .brand {
 
 .collections-slider .collection-image-wrapper {
     width: 100%;
-    height: 600px;
+    height: 550px;
     background: #f4f4f4;
     overflow: hidden;
     transition: box-shadow 0.6s ease;
@@ -1093,7 +1093,7 @@ h1, h2, .brand {
 }
 
 .collections-grid .collection-image-wrapper {
-    height: 350px; /* Un poco más bajitas para que mantengan la proporción */
+    height: 350px;
     width: 100%;
     overflow: hidden;
     background-color: #f9f9f9;
@@ -1104,6 +1104,19 @@ h1, h2, .brand {
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.collections-grid .collection-card {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    
+    /* Usamos una curva de transición (cubic-bezier) para que el movimiento se sienta orgánico y no mecánico */
+    transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.collections-grid .collection-card.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 .collections-grid .collection-card:hover img {
@@ -1146,6 +1159,7 @@ h1, h2, .brand {
 }
 
 /* CONTACT MODAL */
+
 .contact-modal-content {
     position: relative;
     background: #fff;
@@ -1231,6 +1245,11 @@ h1, h2, .brand {
     transform: translateX(-50%); /* El método moderno y limpio */
     margin-top: -60px;
     margin-bottom: 0;
+
+    z-index: 10;
+    box-shadow: 0 -20px 40px rgba(0,0,0,0.1);
+    border-top-left-radius: 40px; 
+    border-top-right-radius: 40px;
 }
 
 .grid-header {
@@ -1258,19 +1277,6 @@ h1, h2, .brand {
     column-gap: 15px;
     padding: 0 15px;
 }
-
-/* Estado inicial (oculto) */
-/* .grid-item {
-    display: inline-block;
-    margin-bottom: 15px;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    border-radius: 4px;
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-} */
 
 .grid-item {
     display: block; /* Cambiamos inline-block por block */
@@ -1397,3 +1403,9 @@ html {
     }
 }
 
+.sticky-albums-wrapper {
+    position: sticky;
+    top: 1px;
+    z-index: 1;
+    padding-bottom: 40px;
+}

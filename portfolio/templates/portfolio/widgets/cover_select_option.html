@@ -7,12 +7,7 @@
            {% for k, v in widget.attrs.items %}{{ k }}="{{ v }}" {% endfor %}>
 
     {% if widget.thumb_url and widget.thumb_type == 'video' %}
-      {# Video: autoplay silencioso en loop como GIF #}
-      <video class="cover-thumb"
-             src="{{ widget.thumb_url }}"
-             autoplay muted loop playsinline
-             preload="auto">
-      </video>
+      <img src="{{ widget.thumb_url }}" class="cover-thumb" alt="{{ widget.label }}">
       <span class="cover-video-badge">▶</span>
 
     {% elif widget.thumb_url %}

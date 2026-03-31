@@ -44,4 +44,34 @@
         {% endfor %}
     </div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const observerOptions = {
+        threshold: 0.05, // Se activa cuando al menos el 5% de la tarjeta es visible
+        rootMargin: "0px 0px -50px 0px" // Dispara un poquito antes de llegar al borde inferior
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        // entries son las tarjetas que acaban de entrar en pantalla
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Le agregamos un delay multiplicando el índice por 100ms
+                // Esto hace que si aparecen 3 juntas, hagan el efecto: 1..2..3
+                setTimeout(() => {
+                    entry.target.classList.add('is-visible');
+                }, index * 100); 
+                
+                // Una vez que apareció, dejamos de observarla para que no se vuelva a ocultar si subimos
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Seleccionamos todas las tarjetas y las ponemos bajo vigilancia
+    document.querySelectorAll('.collections-grid .collection-card').forEach(card => {
+        observer.observe(card);
+    });
+});
+</script>
 {% endblock %}

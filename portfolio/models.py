@@ -129,7 +129,7 @@ class Media(models.Model):
         )
     
     duration = models.DurationField(help_text='HH:MM:SS', verbose_name='Duración', null=True, blank=True, )
-    thumbnail = models.ImageField(upload_to='portfolio/media/thumbnails/', verbose_name='Miniatura del Video', null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='portfolio/media/thumbnails/', verbose_name='Miniatura', null=True, blank=True)
 
     width = models.IntegerField(editable=False, null=True, verbose_name='Ancho', help_text='px')
     height = models.IntegerField(editable=False, null=True, verbose_name='Alto', help_text='px')
@@ -163,6 +163,22 @@ class Media(models.Model):
             if not self.width or not self.height:
                 img = Image.open(self.image_file)
                 self.width, self.height = img.size   
+        
+        if not self.thumbnail:
+                img = Image.open(self.image_file)
+                if img.mode in ("RGBA", "P"):
+                    img = img.convert("RGB")
+                
+                img.thumbnail((300, 300)) 
+                
+                temp_thumb = BytesIO()
+                img.save(temp_thumb, format='WEBP', quality=60) 
+                temp_thumb.seek(0)
+                
+                base_name = os.path.basename(self.image_file.name).split('.')[0]
+                img_path = f"thumb_img_{base_name}.webp"
+                
+                self.thumbnail.save(img_path, ContentFile(temp_thumb.read()), save=False)
 
         super().save(*args, **kwargs)
              
@@ -172,7 +188,7 @@ class Media(models.Model):
                 try:
                     video = VideoFileClip(self.video_file.path)
                     self.width, self.height = video.size
-                    self.duration = datetime.timedelta(seconds=video.duration)
+                    self.duration = datetime.timedelta(seconds=round(video.duration,2))
                     
                     if not self.thumbnail:
                         frame_time = min(1.0, video.duration / 2) if video.duration else 0
@@ -203,78 +219,3 @@ class Media(models.Model):
         if self.id_collection:
             return f'{self.id_collection} - {self.type}'
         return f'Untitled - {self.type}'
-
-# class Picture(models.Model):
-#     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Título')
-
-#     collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, blank=True, null=True, related_name="pictures", verbose_name='Album de Pertenencia')
-#     image = models.ImageField(upload_to='portfolio/images/', 
-#                               verbose_name='Archivo de la Imágen',
-#                               width_field='width',
-#                               height_field='height')
-
-#     width = models.IntegerField(editable=False, null=True, verbose_name='Ancho', help_text='px')
-#     height = models.IntegerField(editable=False, null=True, verbose_name='Alto', help_text='px')
-
-#     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
-#     captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
-    
-#     id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True, verbose_name='ID') 
-
-#     def save(self, *args, **kwargs):
-#         if self.collection:
-#             self.captured_at = self.collection.captured_at
-#         if not self.id_collection:
-#             pictures_in_col = Picture.objects.filter(collection=self.collection)
-#             current_count = pictures_in_col.count()            
-#             self.id_collection = f"{current_count + 1}_{slugify(self.collection.title)}"
-        
-#         super().save(*args, **kwargs)
-
-#     def __str__(self):
-#         if self.id_collection:
-#             return f'{self.id_collection}'
-#         return 'No ID'
-        
-#     class Meta:
-#         verbose_name = 'Foto'
-#         verbose_name_plural = 'Fotos'
-#         ordering = ['-captured_at']
-
-# class Video(models.Model):
-#     title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Título')
-
-#     collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, blank=True, null=True, related_name="videos", verbose_name='Album de Pertenencia')
-#     file = models.FileField(upload_to='portfolio/videos/', verbose_name='Archivo del Video')
-    
-#     width = models.IntegerField(editable=False, null=True, verbose_name='Ancho', help_text='px')
-#     height = models.IntegerField(editable=False, null=True, verbose_name='Alto', help_text='px')
-
-#     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de publicación')
-#     captured_at = models.DateField(blank=True, null=True, verbose_name='Fecha de captura')
-
-#     id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True, verbose_name='ID') 
-
-#     def save(self, *args, **kwargs):
-#         super().save(*args, **kwargs)
-        
-#         if self.file and (not self.duration or not self.width or not self.height):
-#             try:
-#                 clip = VideoFileClip(self.file.path)
-#                 if not self.duration:
-#                     self.duration = datetime.timedelta(seconds=clip.duration)
-
-#                 if not self.width or not self.height:
-#                     self.width = clip.size[0]
-#                     self.height = clip.size[1]
-                
-#                 clip.close()
-                
-#                 super().save(update_fields=['duration', 'width', 'height'])
-#             except Exception as e:
-#                 print(f"Error extrayendo duración del video: {e}")
-
-#     def __str__(self):
-#         if self.id_collection:
-#             return f'{self.id_collection}'
-#         return 'No ID'
