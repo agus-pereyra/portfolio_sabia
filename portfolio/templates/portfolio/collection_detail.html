@@ -46,26 +46,22 @@
     </header>
 
     <section class="photo-story-grid">
-        {% for video in collection.videos.all %}
-            <div id="vid-{{ video.id }}" class="photo-item video-item media-item" 
-                data-type="video" 
-                data-url="{{ video.file.url }}"
+        {% for item in collection.media_items.all %}
+            <div id="media-{{ item.id }}" class="photo-item media-item {% if item.type == 'video' %}video-item{% endif %}" 
+                data-type="{{ item.type }}" 
+                data-url="{% if item.type == 'video' %}{{ item.video_file.url }}{% else %}{{ item.image_file.url }}{% endif %}"
+                data-index="{{ forloop.counter0 }}"
                 onclick="openModal({{ forloop.counter0 }})">
-                <video autoplay muted loop playsinline width="100%" style="display: block; cursor: pointer;">
-                    <source src="{{ video.file.url }}" type="video/mp4">
-                </video>
-            </div>
-        {% endfor %}
-
-        {% for pic in collection.pictures.all %}
-            <div id="pic-{{ pic.id }}" class="photo-item media-item" 
-                data-type="image" 
-                data-url="{{ pic.image.url }}"
-                data-index="{{ forloop.counter0|add:collection.videos.count }}"
-                onclick="openModal(this.getAttribute('data-index'))">
-                <img src="{{ pic.image.url }}" 
-                    alt="{{ pic.title }}" 
-                    style="cursor: pointer;">
+                
+                {% if item.type == 'image' %}
+                    <img src="{{ item.image_file.url }}" 
+                        alt="{{ collection.title }}" 
+                        style="cursor: pointer;">
+                {% else %}
+                    <video autoplay muted loop playsinline width="100%" style="display: block; cursor: pointer;">
+                        <source src="{{ item.video_file.url }}" type="video/mp4">
+                    </video>
+                {% endif %}
             </div>
         {% endfor %}
     </section>
@@ -91,22 +87,13 @@
 
 <script>
 const mediaList = [
-    {% for video in collection.videos.all %}
+    {% for item in collection.media_items.all %}
     {
-        type: "video",
-        url: "{{ video.file.url }}",
-        title: "{{ video.title|default:'' }}",
+        type: "{{ item.type }}",
+        url: "{% if item.type == 'video' %}{{ item.video_file.url }}{% else %}{{ item.image_file.url }}{% endif %}",
+        title: "{{ collection.title }}",
         date: "{{ collection.captured_at|date:'M Y'|upper }}",
-        res: "{{ video.width }}x{{ video.height }} px"
-    },
-    {% endfor %}
-    {% for pic in collection.pictures.all %}
-    {
-        type: "image",
-        url: "{{ pic.image.url }}",
-        title: "{{ pic.title|default:'' }}",
-        date: "{{ collection.captured_at|date:'M Y'|upper }}",
-        res: "{{ pic.image.width }}x{{ pic.image.height }} px"
+        res: "{{ item.width|default:'N/A' }}x{{ item.height|default:'N/A' }} px"
     }{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];

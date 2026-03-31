@@ -1,4 +1,4 @@
-from .models import Collection, Picture, Video
+from .models import Collection, Media
 from django.views.generic import DetailView, ListView
 from django.shortcuts import render
 import random
@@ -23,17 +23,7 @@ def collections_list(request):
     })
 
 def get_random_media(request):
-    pictures = list(Picture.objects.all().order_by('?')[:12])
-    videos = list(Video.objects.all().order_by('?')[:3])
-
-    for p in pictures:
-        p.media_type = 'picture'
-    for v in videos:
-        v.media_type = 'video'
-        
-    random_media = pictures + videos
-    random.shuffle(random_media)
-
+    random_media = list(Media.objects.all().order_by('?')[:20])
     return render(request, 'portfolio/includes/picture_grid_items.html', {'random_media': random_media})
 
 class CollectionDetailView(DetailView):
@@ -56,15 +46,7 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         context['collections_all'] = Collection.objects.all().order_by('-captured_at')
         
-        pictures = list(Picture.objects.all().order_by('?')[:12])
-        videos = list(Video.objects.all().order_by('?')[:3])
-
-        for p in pictures:
-            p.media_type = 'picture'
-        for v in videos:
-            v.media_type = 'video'
-            
-        random_media = pictures + videos
+        random_media = list(Media.objects.all().order_by('?')[:20])
         random.shuffle(random_media)
 
         context['random_media'] = random_media
