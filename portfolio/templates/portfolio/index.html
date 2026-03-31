@@ -22,67 +22,71 @@
     </section>
 
     <main class="main-content">
-        <header class="home-intro">
-            <h1>
-                <a href="{% url 'collections_list' %}">Albums</a>
-            </h1>
-            <p>Sesiones Seleccionadas</p>
-        </header>
 
-        <!-- Contenedor principal de Swiper -->
-        <section class="swiper collections-slider">
-            <div class="swiper-wrapper">
-                {% for col in collections %}
-                <div class="swiper-slide">
-                    <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
-                        <div class="collection-image-wrapper">
-                            {% if col.cover_video %}
-                                <video autoplay muted loop playsinline width="100%" height="100%" style="object-fit: cover;">
-                                    <source src="{{ col.cover_video.video_file.url }}" type="video/mp4" loading="eager">
-                                </video>
-                            {% elif col.cover %}
-                                <img src="{{ col.cover.image_file.url }}" alt="{{ col.title }}" loading="eager">
-                            {% else %}
-                                {% with first_item=col.get_first_media %}
-                                    {% if first_item %}
-                                        {% if first_item.type == 'image' %}
-                                            <img src="{{ first_item.image_file.url }}" alt="{{ col.title }}">
+        <div class="sticky-albums-wrapper">
+
+            <header class="home-intro">
+                <h1>
+                    <a href="{% url 'collections_list' %}">Albums</a>
+                </h1>
+                <p>Sesiones Seleccionadas</p>
+            </header>
+
+            <!-- Contenedor principal de Swiper -->
+            <section class="swiper collections-slider">
+                <div class="swiper-wrapper">
+                    {% for col in collections %}
+                    <div class="swiper-slide">
+                        <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
+                            <div class="collection-image-wrapper">
+                                {% if col.cover_video %}
+                                    <video autoplay muted loop playsinline width="100%" height="100%" style="object-fit: cover;">
+                                        <source src="{{ col.cover_video.video_file.url }}" type="video/mp4" loading="eager">
+                                    </video>
+                                {% elif col.cover %}
+                                    <img src="{{ col.cover.image_file.url }}" alt="{{ col.title }}" loading="eager">
+                                {% else %}
+                                    {% with first_item=col.get_first_media %}
+                                        {% if first_item %}
+                                            {% if first_item.type == 'image' %}
+                                                <img src="{{ first_item.image_file.url }}" alt="{{ col.title }}">
+                                            {% else %}
+                                                <video autoplay muted loop playsinline style="object-fit: cover;">
+                                                    <source src="{{ first_item.video_file.url }}" type="video/mp4">
+                                                </video>
+                                            {% endif %}
                                         {% else %}
-                                            <video autoplay muted loop playsinline style="object-fit: cover;">
-                                                <source src="{{ first_item.video_file.url }}" type="video/mp4">
-                                            </video>
+                                            <div style="height: 100%; width: 100%; background: #f4f4f4;"></div>
                                         {% endif %}
-                                    {% else %}
-                                        <div style="height: 100%; width: 100%; background: #f4f4f4;"></div>
-                                    {% endif %}
-                                {% endwith %}
-                            {% endif %}
-                        </div>
-                         <div class="collection-info">
-                            <h2>{{ col.title }}</h2>
-                            <div class="collection-meta">
-                                {% if col.get_photos_count > 0 and col.get_videos_count > 0 %}
-                                    {{ col.get_photos_count }} Fotografía{{ col.get_photos_count|pluralize:"s" }} · {{ col.get_videos_count }} Video{{ col.get_videos_count|pluralize:"s" }}
-                                {% elif col.get_photos_count > 0 %}
-                                    {{ col.get_photos_count }} Fotografía{{ col.get_photos_count|pluralize:"s" }}
-                                {% elif col.get_videos_count > 0 %}
-                                    {{ col.get_videos_count }} Video{{ col.get_videos_count|pluralize:"s" }}
+                                    {% endwith %}
                                 {% endif %}
-                                <div class="slider-drag-layer"></div>
                             </div>
-                        </div>
+                            <div class="collection-info">
+                                <h2>{{ col.title }}</h2>
+                                <div class="collection-meta">
+                                    {% if col.get_photos_count > 0 and col.get_videos_count > 0 %}
+                                        {{ col.get_photos_count }} Fotografía{{ col.get_photos_count|pluralize:"s" }} · {{ col.get_videos_count }} Video{{ col.get_videos_count|pluralize:"s" }}
+                                    {% elif col.get_photos_count > 0 %}
+                                        {{ col.get_photos_count }} Fotografía{{ col.get_photos_count|pluralize:"s" }}
+                                    {% elif col.get_videos_count > 0 %}
+                                        {{ col.get_videos_count }} Video{{ col.get_videos_count|pluralize:"s" }}
+                                    {% endif %}
+                                    <div class="slider-drag-layer"></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="show-all-wrapper">
+                    <a href="{% url 'collections_list' %}" class="show-all-link">
+                        Ver archivo completo <span class="arrow">→</span>
                     </a>
                 </div>
-            {% endfor %}
-            </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="show-all-wrapper">
-                <a href="{% url 'collections_list' %}" class="show-all-link">
-                    Ver archivo completo <span class="arrow">→</span>
-                </a>
-            </div>
-        </section>
+            </section>
+        </div>    
 
         <section class="random-grid-section">
             <div class="grid-header">

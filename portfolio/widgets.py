@@ -1,6 +1,5 @@
 from django.forms import widgets
 
-
 class CoverSelectWidget(widgets.RadioSelect):
     """
     Widget de selección de portada con miniaturas.
@@ -29,13 +28,24 @@ class CoverSelectWidget(widgets.RadioSelect):
             for option in subgroup:
                 raw_val = str(option.get('value', ''))
                 media_obj = media_map.get(raw_val)
+                
                 if media_obj:
-                    if media_obj.type == 'image' and media_obj.image_file:
+                    # 1. Prioridad absoluta: Si hay miniatura (sea foto o video), usamos eso
+                    if media_obj.thumbnail:
+                        option['thumb_url'] = media_obj.thumbnail.url
+                        option['thumb_type'] = media_obj.type
+                    
+                    # 2. Fallback de seguridad para imágenes viejas sin miniatura
+                    elif media_obj.type == 'image' and media_obj.image_file:
                         option['thumb_url'] = media_obj.image_file.url
                         option['thumb_type'] = 'image'
-                    elif media_obj.type == 'video' and media_obj.thumbnail:
-                        option['thumb_url'] = media_obj.thumbnail.url
+                        
+                    # 3. Fallback para videos rotos/sin procesar
+                    elif media_obj.type == 'video' and media_obj.video_file:
+                        # Dejamos la URL del video original (se mostrará vacío pero no tirará error fatal)
+                        option['thumb_url'] = media_obj.video_file.url 
                         option['thumb_type'] = 'video'
+                        
                     else:
                         option['thumb_url'] = None
                         option['thumb_type'] = None
