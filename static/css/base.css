@@ -1,0 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=IBM+Plex+Mono:wght@300;400&family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;500&display=swap');
+
+:root {
+    --main-bg: #ffffff;
+    --text-color: #1a1a1a;
+    --accent-color: #888888;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+    --font-serif-alt: 'Cormorant Garamond', serif;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-code: 'IBM Plex Mono', monospace;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+body {
+    background-color: var(--main-bg);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-grow: 1; 
+    margin-bottom: 0; 
+}
+
+video {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    background-color: transparent;
+}
+
+h1, h2, .brand {
+    font-family: var(--font-serif);
+    font-weight: 350;
+    letter-spacing: -0.05em;
+}
+
+/* NAVBAR */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 10%;
+}
+
+.brand {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.nav-links a {
+    font-family: var(--font-serif-alt);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    color: var(--accent-color);
+    margin-left: 25px;
+    font-size: 0.95rem;
+    transition: 0.3s;
+    text-transform: uppercase; 
+}
+
+.nav-links a:hover {
+    color: var(--text-color);
+}
+
+/* NAV SIDE MENU */
+
+.side-nav-right {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    padding-top: 80px;
+    border-left: 1px solid #eee;
+}
+
+.side-nav-content {
+    padding: 0 40px;
+    text-align: right;
+}
+
+.side-nav-content h3 {
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 0.7rem;
+    margin-bottom: 40px;
+    color: var(--accent-color);
+    font-family: var(--font-sans);
+}
+
+.side-nav-content a {
+    padding: 15px 0;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-family: var(--font-serif);
+    color: var(--text-color) !important;
+    display: block;
+    transition: 0.3s;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.side-nav-content a:hover {
+    padding-right: 15px;
+    color: var(--accent-color) !important;
+}
+
+.nav-year {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    color: #bbb;
+    margin-left: 10px;
+    font-weight: 300;
+}
+
+.close-btn {
+    position: absolute;
+    top: 25px;
+    left: 30px; 
+    font-size: 30px;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--text-color);
+}
+
+.view-all-link {
+    font-weight: 600 !important;
+    color: var(--text-color) !important;
+    letter-spacing: 1px;
+    border-bottom: none !important;
+    margin-bottom: 5px;
+    font-size: 1.1rem !important;
+}
+
+.nav-arrow-mini {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.view-all-link:hover .nav-arrow-mini {
+    transform: translateX(5px);
+}
+
+.side-menu-divider {
+    height: 1px;
+    background-color: #f0f0f0;
+    margin: 15px 0 25px auto;
+    width: 40%;
+}
+
+.side-nav-content a:not(.view-all-link) {
+    opacity: 0.7;
+    font-size: 1rem;
+}
+
+.side-nav-content a:not(.view-all-link):hover {
+    opacity: 1;
+}
+
+/* FOOTER */
+
+.main-footer {
+    background-color: #f3f3f3;
+    border-top: 1px solid #e8e8e8;
+    padding: 60px 0;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.footer-social {
+    margin-bottom: 30px;
+}
+
+.footer-social a {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    margin: 0 15px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: var(--accent-color);
+}
+
+.footer-info p {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #999;
+    text-transform: uppercase;
+}
+
+/* CONTACT MODAL */
+
+.contact-modal-content {
+    position: relative;
+    background: #fff;
+    width: 90%;
+    max-width: 550px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.contact-header h2 { 
+    color: var(--text-color); margin-bottom: 10px; 
+}
+.contact-header p { 
+    color: var(--accent-color); font-size: 0.9rem; margin-bottom: 30px; 
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 35px;
+    color: white;
+    cursor: pointer;
+    z-index: 2200;
+    padding: 10px;
+    transition: opacity 0.3s;
+}
+
+.close-modal:hover {
+    opacity: 0.7;
+}
+
+#contactForm input, #contactForm textarea {
+    width: 100%;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    font-family: var(--font-sans);
+    outline: none;
+}
+#contactModal.modal-overlay {
+    display: none; /* Se activa con JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999; /* forzar superponer a todo */
+    justify-content: center;
+    align-items: center;
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+#formResponse { margin-top: 20px; font-size: 0.8rem; letter-spacing: 1px; }
+
+.iti { width: 100%; margin-bottom: 20px; }
+.iti__flag-container { outline: none; }
+.contact-modal-content input#phone {
+    padding-left: 90px !important; /* espacio para la bandera y el código */
+    border-bottom: 1px solid #eee;
+}
+
+.iti--separate-dial-code .iti__selected-dial-code {
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    font-size: 14px;
+}
+
+.spinner {
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(0,0,0,0.1);
+    border-top: 2px solid var(--accent-color);
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px;
+}
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+}
+
+#sendBtn:disabled {
+    pointer-events: none;
+}

@@ -1,0 +1,181 @@
+/* --- ABOUT SECTION --- */
+
+.about-section {
+    width: 100%;
+    min-height: 100vh; /* Alto total de pantalla */
+    background-color: var(--main-bg);
+}
+
+.about-container {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr; /* Imagen más ancha que el texto */
+    min-height: 100vh;
+    gap: 0; /* Sin espacio entre bloques para que la foto pegue al centro */
+}
+
+.about-image {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    /* parallax */
+    position: sticky; 
+    top: 0;
+    height: 100vh; 
+    opacity: 0;
+    transform: translateY(30px);
+    animation: revealImage 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.about-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+
+    transform: scale(1.15); 
+    animation: imageZoomOut 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.about-text-content > * {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUpText 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.about-subtitle { animation-delay: 0.2s; }
+.about-text-content h1 { animation-delay: 0.3s; }
+.about-description { animation-delay: 0.4s; }
+.about-footer { animation-delay: 0.5s; }
+
+@keyframes revealImage {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes imageZoomOut {
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeUpText {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.about-text {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-end; /* Alinea el bloque interno a la derecha */
+    padding: 80px 8%;
+}
+
+.about-text-content {
+    max-width: 500px; /* Controla que el texto no se estire demasiado */
+    width: 100%;
+}
+
+.about-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.about-text h1 {
+    font-family: var(--font-serif);
+    font-size: 4rem;
+    margin-bottom: 40px;
+    line-height: 1;
+}
+
+.about-description p {
+    font-family: var(--font-sans);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.about-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.about-footer h3 {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+}
+
+.about-footer a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    transition: opacity 0.3s;
+}
+
+.about-footer a i {
+    width: 18px;
+    color: var(--accent-color);
+}
+
+.about-footer a:hover {
+    opacity: 0.6;
+}
+
+/* --- ABOUT (RESPONSIVE) --- */
+
+@media (max-width: 1024px) {
+    .about-container {
+        grid-template-columns: 1fr; /* Una sola columna */
+        min-height: auto;           /* ELIMINA el espacio vertical sobrante */
+    }
+
+    .about-image {
+        height: 20vh;               /* Subí un poquito a 40 para que se luzca más */
+    }
+
+    .about-image img {
+        object-fit: cover;          /* Sigue cubriendo el área */
+    }
+
+    .about-text {
+        padding: 40px 20px;         /* Espacio controlado manualmente entre imagen y texto */
+        align-items: flex-start;    /* Alinea el texto hacia arriba, cerca de la imagen */
+        justify-content: center;
+    }
+
+    .about-text h1 { 
+        font-size: 3.8rem;          /* Un poco más balanceado para celulares */
+        margin-bottom: 20px;
+    }
+
+    .about-text-content {
+        max-width: 80%;
+    }
+
+    .about-footer {
+        grid-template-columns: 1fr; /* Contacto y Social uno abajo del otro */
+        gap: 20px;
+        margin-top: 30px;
+    }
+}

@@ -53,4 +53,4 @@ class HomeView(ListView):
         return context
 
     def get_queryset(self):
-            return Collection.objects.filter(is_featured=True).order_by('-captured_at')
+            return Collection.objects.filter(is_featured=True).order_by('featured_order')
