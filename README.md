@@ -1,10 +1,15 @@
-## FALTA
+## Web Base (dev)
 
+- [x] ~~Orden manual de fotos y videos~~
+- [x] ~~Index: Parallax Scroll entre Gallery y Albums.~~
+- [x] ~~Orden manual albums destacados~~
 - [ ] Hacer responsive
-- [x] Orden manual de fotos y videos
-- [ ] Mejorar About
+- [x] ~~Mejorar About~~
+- [ ] Separar CSS
+
+## Pre-production 
+
 - [ ] Configurar Admin/Staff
-- [x] Index: Parallax Scroll entre Gallery y Albums.
-- [ ] Orden manual albums destacados
+- [ ] SQlite a PosgresSQL
 - [ ] Conectar con AWS 3
 - [ ] Enlazar Host (al menos prueba gratuita)

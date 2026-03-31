@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.text import slugify
 from django.urls import reverse
-from adminsortable2.admin import SortableInlineAdminMixin, SortableAdminBase
+from adminsortable2.admin import SortableInlineAdminMixin, SortableAdminBase, SortableAdminMixin
 from .models import Collaborator, Collection, Media
 from .custom_fields import MultipleMediaField
 from .widgets import CoverSelectWidget
@@ -134,16 +134,16 @@ class MediaAdmin(admin.ModelAdmin):
     get_preview.short_description = 'Preview'
 
 @admin.register(Collection)
-class CollectionAdmin(SortableAdminBase, admin.ModelAdmin):
+class CollectionAdmin(SortableAdminMixin, SortableAdminBase, admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ('title',)
     inlines = [MediaInLine]
     filter_horizontal = ('collaborators',)
     form = CollectionForm
 
-    list_display = ('title', 'slug',  'is_featured', 'get_photos_count', 'get_videos_count', 'captured_at')
-    list_editable = ('is_featured',)
+    list_display = ('is_featured', 'featured_order', 'title', 'slug', 'get_photos_count', 'get_videos_count', 'captured_at')
     list_filter = ('is_featured', 'captured_at')
+    list_display_links = ('title',)
 
     fieldsets = (
         (None, {

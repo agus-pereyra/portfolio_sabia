@@ -60,6 +60,8 @@ class Collection(models.Model):
         null=True, blank=True,
         )
 
+    featured_order = models.PositiveIntegerField(default=0, blank=False, null=False, verbose_name='Orden', help_text='(En la sección de destacados)')
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
@@ -90,7 +92,7 @@ class Collection(models.Model):
     class Meta:
         verbose_name = 'Colección'
         verbose_name_plural = 'Colecciones'
-        ordering = ['-captured_at']
+        ordering = ['featured_order']
 
 class Media(models.Model):
     TYPE_CHOICES = [
@@ -139,7 +141,7 @@ class Media(models.Model):
 
     id_collection = models.CharField(max_length=255, null=True, editable=False, db_index=True, unique=True, verbose_name='ID')
 
-    order = models.PositiveIntegerField(default=0, blank=False, null=False)
+    order = models.PositiveIntegerField(default=0, blank=False, null=False, verbose_name='Orden', help_text='(dentro de su álbum)')
 
     def save(self, *args, **kwargs):
         if self.collection and not self.captured_at:

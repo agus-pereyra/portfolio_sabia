@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extracss %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock extracss %}
+
 {% block content %}
-    {% comment %} <section class="home-hero-video">
+    {% comment %} 
+     EN CASO DE NECESITAR VIDEO COMO HERO
+     <section class="home-hero-video">
         <video autoplay muted loop playsinline poster="{% static 'images/home-placeholder.webp' %}">
             <source src="{% static 'videos/home-hero.mp4' %}" type="video/mp4">
         </video>
@@ -11,7 +17,8 @@
             <h1>FRANCESCA SABIA</h1>
             <h2>Portfolio</h2>
         </div>
-    </section> {% endcomment %}
+    </section> 
+    {% endcomment %}
     <section class="home-hero-video">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;"></div>
         <div class="hero-overlay"></div>
@@ -25,7 +32,7 @@
 
         <div class="sticky-albums-wrapper">
 
-            <header class="home-intro">
+            <header class="featured-collections">
                 <h1>
                     <a href="{% url 'collections_list' %}">Albums</a>
                 </h1>
@@ -71,7 +78,6 @@
                                     {% elif col.get_videos_count > 0 %}
                                         {{ col.get_videos_count }} Video{{ col.get_videos_count|pluralize:"s" }}
                                     {% endif %}
-                                    <div class="slider-drag-layer"></div>
                                 </div>
                             </div>
                         </a>

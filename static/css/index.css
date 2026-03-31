@@ -1,0 +1,566 @@
+/* MAIN (separado de HERO para posición relativa vs sticky) */
+
+.main-content { 
+    position: relative;
+    z-index: 10;       
+    background-color: var(--background-color, #fff); 
+    padding-top: 25px;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
+}
+
+/* --- HERO VIDEO INDEX --- */
+
+.home-hero-video {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 40vh;
+    z-index: 1;
+    min-height: 180px;
+    overflow: hidden;
+    background-color: #000;
+
+    justify-content: center;
+    display: flex;
+    align-items: center;
+
+}
+
+@media (max-width: 1000px) {
+    .home-hero-video {
+        height: 25vh; 
+        min-height: 50px; 
+    }
+    
+    .hero-content h1 {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+}
+
+.home-hero-video video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100vh;
+    transform: translate(-50%, -50%);
+    object-fit: cover; 
+    
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3; /* Por encima del video y del overlay */
+    text-align: center;
+}
+
+.hero-content h1 {
+    color: #ffffff;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    margin: 0;
+    text-transform: uppercase;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); 
+}
+
+.hero-content h2 {
+    color: #ffffff;
+    font-family: var(--font-serif);
+    font-size: clamp(0.5rem, 5vw, 2rem);
+    font-weight: 100;
+    letter-spacing: 0.2em;
+    margin: 0;
+    text-transform: lowercase;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* HERO ANIMATIONS */
+
+.home-hero-video {
+    clip-path: inset(0 100% 0 0);
+    animation: revealBar 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.hero-content {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUpContent 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.6s forwards;
+}
+
+.home-intro {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUpContent 0.8s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards;
+}
+
+.collections-slider {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeUpContent 0.8s cubic-bezier(0.25, 1, 0.5, 1) 1.2s forwards;
+}
+
+@keyframes revealBar {
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes fadeUpContent {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* HERO CONTENT ANIMATION */
+
+.hero-content h1, 
+.hero-content h2 {
+    color: transparent;
+    background-color: rgba(255, 255, 255, 0.40); /* base */
+    
+    /* Variables para el mouse (arrancan escondidas fuera de la pantalla) */
+    --mouse-x: -500px;
+    --mouse-y: -500px;
+
+    background-image: 
+        radial-gradient(
+            circle 120px at var(--mouse-x) var(--mouse-y), 
+            rgba(255, 255, 255, 1) 0%, 
+            transparent 100%
+        ),
+        linear-gradient(
+            110deg, 
+            transparent 0%, 
+            transparent 40%, 
+            rgba(255, 255, 255, 1) 50%, 
+            transparent 60%, 
+            transparent 100%
+        );
+    
+    background-size: 100% 100%, 200% 100%;
+    background-repeat: no-repeat;
+    
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    animation: shine 10s infinite;
+}
+
+@keyframes shine {
+    0% { background-position: 0 0, 200% center; } 
+    85% { background-position: 0 0, -200% center; } /* animación */
+    100% { background-position: 0 0, -200% center; } /* descanso */
+}
+
+/* FEATURED COLLECTIONS TITLE */
+
+.sticky-albums-wrapper { /* parallax scroll effect */
+    position: sticky;
+    top: 1px;
+    z-index: 1;
+    padding-bottom: 40px;
+}
+
+.featured-collections {
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.featured-collections h1 {
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.featured-collections h1 a {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block; 
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.featured-collections h1 a:hover {
+    transform: scale(1.01);
+    opacity: 0.7;
+}
+
+.featured-collections p {
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+}
+
+/* --- FEATURED COLLECTIONS SHOW ALL --- */
+
+.show-all-wrapper {
+    text-align: center;
+    margin-top: -30px; /* Sube un poco para acercarse al slider */
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 20; /* Para que quede por encima de las sombras del slider */
+    padding: 40px 0px;
+}
+
+.show-all-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+}
+
+.show-all-link .arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.show-all-link:hover {
+    color: var(--text-color);
+}
+
+.show-all-link:hover .arrow {
+    transform: translateX(5px); /* Efecto lindo: la flechita se mueve al pasar el mouse */
+}
+
+/* --- COLLECTIONS SLIDER / SWIPER --- */
+
+.collections-slider {
+    width: 100%;
+    padding-top: 100px;
+    overflow: visible;
+    position: relative;
+    display: block;
+}
+
+.collections-slider .swiper-wrapper {
+    display: flex !important;
+    box-sizing: content-box !important;
+}
+
+.collections-slider .swiper-slide {
+    width: 450px !important; 
+    height: auto;
+    display: block !important; 
+    opacity: 0.3; 
+    transition-property: transform, opacity;
+    box-sizing: border-box;
+    align-items: center;
+    flex-direction: column;
+}
+
+.collections-slider .swiper-slide-active {
+    opacity: 1 !important;
+    z-index: 10;
+}
+
+.collections-slider .collection-image-wrapper {
+    width: 100%;
+    height: 550px;
+    background: #f4f4f4;
+    overflow: hidden;
+    transition: box-shadow 0.6s ease;
+    display: block;
+}
+
+.collections-slider .swiper-slide-active .collection-image-wrapper {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.collections-slider .collection-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block; 
+}
+
+.collections-slider .collection-card {
+    display: block !important; 
+    text-decoration: none;
+    color: var(--text-color);
+    width: 100%;
+}
+
+/* Flechas */
+.swiper-button-next, 
+.swiper-button-prev {
+    color: var(--text-color) !important;
+    background: rgba(255, 255, 255, 0.9);
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 50;
+    top: 50% !important;
+    transform: translateY(-50%);
+}
+
+.swiper-button-next { right: 4% !important; }
+.swiper-button-prev { left: 4% !important; }
+
+.swiper-button-next:after, 
+.swiper-button-prev:after {
+    font-size: 18px !important;
+}
+
+.swiper-slide-duplicate {
+    /* Mantiene la consistencia visual en los clones */
+    transition: none !important; 
+}
+
+.collection-image-wrapper {
+    position: relative; /* Necesario para posicionar la capa */
+    overflow: hidden;
+}
+
+.collection-image-wrapper video, 
+.collection-image-wrapper img {
+    pointer-events: none; 
+    user-select: none;
+}
+
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 40px;
+    padding: 0 5%;
+    margin-bottom: 100px;
+}
+
+.collection-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.collection-card:hover {
+    opacity: 0.8;
+}
+
+.collection-image-wrapper {
+    height: 400px; 
+    width: auto;
+    overflow: hidden;
+}
+
+.collection-image-wrapper img {
+    width: auto;
+    height: 100%;
+    display: block;
+    transition: transform 0.6s ease;
+}
+
+.collection-card:hover img {
+    transform: scale(1.02);
+}
+
+.collection-card:hover video {
+    transform: scale(1.02);
+}
+
+.collection-info {
+    margin-top: 15px;
+}
+
+.collection-info h2 {
+    font-size: 1.2rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.collection-meta {
+    font-size: 0.7rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    margin-top: 5px;
+    margin-bottom: 35px;
+    letter-spacing: 1px;
+}
+
+/* RANDOM PICTURES GRID */
+
+.random-grid-section {
+    padding-top: 50px;
+    padding-bottom: 40px;
+    background-color: #fff;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%); /* El método moderno y limpio */
+    margin-top: -60px;
+    margin-bottom: 0;
+
+    z-index: 10;
+    box-shadow: 0 -20px 40px rgba(0,0,0,0.1);
+    border-top-left-radius: 40px; 
+    border-top-right-radius: 40px;
+}
+
+.grid-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.grid-header h2 {
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0px;
+}
+
+.grid-header p {
+    font-family: var(--font-sans);
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    padding-bottom: 10px;
+}
+
+.masonry-wrapper {
+    column-count: 4; 
+    column-gap: 15px;
+    padding: 0 15px;
+}
+
+.grid-item {
+    display: block; /* Cambiamos inline-block por block */
+    break-inside: avoid; /* Evita que las fotos se partan a la mitad entre columnas */
+    -webkit-column-break-inside: avoid;
+    margin-bottom: 15px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    
+    /* Tus animaciones hermosas quedan intactas */
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.grid-item.is-visible,
+.grid-item.loaded {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.grid-item img, 
+.grid-item video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.grid-item:hover img,
+.grid-item:hover video {
+    transform: scale(1.05);
+}
+
+.grid-item-overlay {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    z-index: 10;
+}
+
+.grid-item:hover .grid-item-overlay {
+    opacity: 1;
+}
+
+.grid-item-overlay span {
+    pointer-events: none; 
+}
+
+@media (max-width: 1024px) { .masonry-wrapper { column-count: 3; } }
+@media (max-width: 768px) { .masonry-wrapper { column-count: 2; } }
+
+.btn-minimal {
+    background: transparent;
+    border: 1px solid #ddd;
+    padding: 12px 30px;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-minimal:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.btn-minimal .icon {
+    margin-right: 8px;
+    display: inline-block;
+}
+
+#masonry-container {
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* FROM RANDOM GRID TO PHOTO IN COLLECTION JUMP */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.photo-item:target {
+    animation: highlightLanding 1.5s ease-out; /* destacar media */
+    outline: none;
+}
+
+.grid-item:hover img,
+.grid-item:hover video {
+    transform: scale(1.05); /* Le bajé un poco el zoom para que sea más sutil */
+}
+@keyframes highlightLanding {
+    0% { 
+        filter: brightness(1);
+        transform: scale(1);
+    }
+    30% { 
+        filter: brightness(1.2); /* Brilla un poquito */
+        transform: scale(1.03);  /* Crece apenas */
+    }
+    100% { 
+        filter: brightness(1);
+        transform: scale(1);
+    }
+}

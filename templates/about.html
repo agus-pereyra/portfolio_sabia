@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extracss %}
+    <link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock extracss %}
+
 {% block title %}About Me{% endblock %}
 
 {% block content %}

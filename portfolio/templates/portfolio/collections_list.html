@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Archivo{% endblock %}
+
+{% block extracss %}
+    <link rel="stylesheet" href="{% static 'css/list.css' %}">
+{% endblock extracss %}
 
 {% block content %}
 <section class="archive-section">
