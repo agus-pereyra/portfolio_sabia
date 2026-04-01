@@ -79,6 +79,22 @@ h1, h2, .brand {
     color: var(--text-color);
 }
 
+/* Ocultamos los links principales del sidebar en PC (ya están en el Navbar superior) */
+.mobile-only {
+    display: none !important;
+}
+
+/* Mostramos el título "Albums" en el sidebar solo en PC */
+.desktop-only {
+    display: block;
+}
+
+#mobile-albums-icon {
+    font-size: 1rem;
+    margin-left: 10px;
+    color: var(--accent-color);
+}
+
 /* NAV SIDE MENU */
 
 .side-nav-right {
@@ -307,4 +323,143 @@ h1, h2, .brand {
 
 #sendBtn:disabled {
     pointer-events: none;
+}
+
+/* HAMBURGUER */
+
+.hamburger {
+    display: none; /* Oculto por defecto en PC */
+    cursor: pointer;
+    z-index: 1001;
+    
+    width: 35px;
+    height: 35px;
+
+    background: none;
+    border: none;
+    padding: 10px;
+    margin: 0;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+        
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hamburger .bar {
+    width: 25px;
+    height: 2px;
+    background-color: var(--text-color);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none; /* Asegura que el toque lo reciba el cuadrado padre */
+}
+
+.hamburger:focus {
+    outline: none;
+    border: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1024px) {    
+    .navbar {
+        padding: 20px 5%; 
+    }
+
+    .nav-links {
+        display: none; /* Adiós links de texto clásicos */
+    }
+
+    .hamburger {
+        display: flex; /* Esto enciende el Flexbox que configuramos arriba */
+    }
+
+    .brand {
+        font-size: 0.8rem;
+    }
+
+    .mobile-only {
+        display: block !important;
+    }
+    
+    .desktop-only {
+        display: none !important;
+    }
+
+    .side-nav-right {
+        padding-top: 100px; 
+    }
+
+    .side-nav-content {
+        padding: 0 20px;
+        text-align: center; 
+        margin-top: 20px;
+    }
+
+    .side-nav-content > a {
+        font-size: 1rem !important; 
+        padding: 20px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    #albums-list {
+        background-color: #fcfcfc;
+        border-radius: 12px;
+        margin-top: 5px;
+        padding: 10px 0;
+    }
+
+    #albums-list a {
+        font-size: 1rem !important;
+        padding: 15px 0;
+        border-bottom: none;
+        color: var(--accent-color) !important;
+    }
+
+    #albums-list a:hover {
+        color: var(--text-color) !important;
+    }
+
+    .view-all-link {
+        font-size: 1.4rem !important; 
+        margin-top: 10px;
+        color: var(--text-color) !important;
+    }
+
+    .close-btn {
+        top: 25px;
+        left: 25px;
+        font-size: 40px; 
+    }
+
+    .side-menu-divider {
+        display: none;
+    }
+
+    .footer-social a {
+        font-size: 1.4rem
+    }
+    .footer-info p {
+        font-size: 0.5rem
+    }
+
+    .contact-modal-content {
+    width: 75%;
+    max-width: 450px;
+    padding: 40px;
+    }   
+
+.contact-header h2 { 
+    color: var(--text-color); margin-bottom: 10px; 
+}
+.contact-header p { 
+    color: var(--accent-color); font-size: 0.9rem; margin-bottom: 30px; 
+}
 }

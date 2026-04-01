@@ -5,7 +5,10 @@
 - [x] ~~Orden manual albums destacados~~
 - [ ] Hacer responsive
 - [x] ~~Mejorar About~~
-- [ ] Separar CSS
+- [x] ~~Separar CSS~~
+- [x] Botón de volver al inicio en details
+- [ ] Barra en el swipper
+- [ ] Sacar flechas de swipper en responsive
 
 ## Pre-production 
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Archivo{% endblock %}
+{% block title %}Albums{% endblock %}
 
 {% block extracss %}
     <link rel="stylesheet" href="{% static 'css/list.css' %}">
@@ -10,7 +10,7 @@
 {% block content %}
 <section class="archive-section">
     <header class="archive-header">
-        <h1>Archivo</h1>
+        <h1>Albums</h1>
         
         <div class="filter-bar">
             <a href="{% url 'collections_list' %}" 
@@ -41,7 +41,7 @@
             </div>
             <div class="collection-info">
                 <h2>{{ col.title }}</h2>
-                <p class="collection-meta">{{ col.captured_at|date:"M Y" }}</p>
+                {% comment %} <p class="collection-meta">{{ col.captured_at|date:"M Y" }}</p> {% endcomment %}
             </div>
         </a>
         {% empty %}

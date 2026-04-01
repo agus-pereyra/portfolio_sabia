@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
@@ -14,17 +16,36 @@
 
         <div class="nav-links">
             <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'collections_list' %}" id="albums-nav-link" onmouseenter="openNav()" onmouseleave="closeNav()">Albums</a>
+            <a href="{% url 'collections_list' %}" id="albums-nav-link" 
+                onmouseenter="openNav()" 
+                onmouseleave="startCloseTimer()">Albums</a>
             <a href="#" onclick="openContactModal(); return false;">Contact</a>
             <a href="{% url 'about' %}">About Me</a>
         </div>
 
-        <div id="side-menu" class="side-nav-right" onmouseenter="openNav()" onmouseleave="closeNav()">
-            <div class="side-nav-header">
-                <span class="close-btn" onclick="closeNav()">&times;</span>
-            </div>
-            <div class="side-nav-content">
-                <h3>Albums</h3>
+        <button class="hamburger"
+                onclick="toggleNav(event)"
+                aria-label="Abrir menú">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </nav>
+
+    <div id="side-menu" 
+        class="side-nav-right" 
+        onmouseenter="cancelCloseTimer()"
+        onmouseleave="startCloseTimer()">
+        <div class="side-nav-header">
+            <span class="close-btn" onclick="closeNav()">&times;</span>
+        </div>
+        <div class="side-nav-content">
+            
+            <a href="{% url 'home' %}" class="mobile-only">Home</a>
+            <a href="#" class="mobile-only" onclick="toggleMobileAlbums(event)">Albums <span id="mobile-albums-icon">▼</span></a>
+            
+            <div id="albums-list">
+                <h3 class="desktop-only">Albums</h3>
                 {% for col in menu_collections %}
                     <a href="{% url 'collection_detail' col.slug %}">
                         {{ col.title }} 
@@ -34,9 +55,13 @@
                 <a href="{% url 'collections_list' %}" class="view-all-link">
                     Ver todos <span class="nav-arrow-mini">→</span>
                 </a>
+            </div>
+
+            <a href="#" class="mobile-only" onclick="openContactModal(); closeNav(); return false;">Contact</a>
+            <a href="{% url 'about' %}" class="mobile-only">About Me</a>
+            
         </div>
     </div>
-    </nav>
 
     <main>
         {% block content %}{% endblock %}
@@ -90,28 +115,74 @@
 
 <!-- script del side-menu -->
 <script>
-let closeTimeout;
+// ── Side menu ─────────────────────────────────────────────────────────
+let closeTimer;
+let menuOpen = false;
 
 function openNav() {
-    clearTimeout(closeTimeout);
-    document.getElementById("side-menu").style.width = "350px";
+    cancelCloseTimer();
+    menuOpen = true;
+    const menu = document.getElementById("side-menu");
+    if (window.innerWidth <= 1024) {
+        menu.style.width = "100%";
+        document.getElementById("albums-list").style.display = "none";
+        const icon = document.getElementById("mobile-albums-icon");
+        if (icon) icon.innerText = "▼";
+    } else {
+        menu.style.width = "350px";
+        document.getElementById("albums-list").style.display = "block";
+    }
 }
 
 function closeNav() {
-    closeTimeout = setTimeout(() => {
-        document.getElementById("side-menu").style.width = "0";
-    }, 300); 
+    menuOpen = false;
+    document.getElementById("side-menu").style.width = "0";
 }
 
-document.addEventListener('click', function(event) {
-    var menu = document.getElementById("side-menu");
-    var btn = document.getElementById("albums-nav-link");
-    if (!menu.contains(event.target) && event.target !== btn) {
-        document.getElementById("side-menu").style.width = "0"; 
+function toggleNav(event) {
+    event.stopPropagation();
+    menuOpen ? closeNav() : openNav();
+}
+
+function startCloseTimer() {
+    if (window.innerWidth > 1024) {
+        closeTimer = setTimeout(closeNav, 300);
+    }
+}
+
+function cancelCloseTimer() {
+    clearTimeout(closeTimer);
+}
+
+function toggleMobileAlbums(event) {
+    event.preventDefault();
+    const list = document.getElementById("albums-list");
+    const icon = document.getElementById("mobile-albums-icon");
+    if (list.style.display === "block") {
+        list.style.display = "none";
+        icon.innerText = "▼";
+    } else {
+        list.style.display = "block";
+        icon.innerText = "▲";
+    }
+}
+
+// Cierra el menú al tocar fuera (mobile) o hacer click fuera (desktop)
+document.addEventListener("click", function (event) {
+    if (!menuOpen) return;
+    const menu = document.getElementById("side-menu");
+    const hamburger = document.querySelector(".hamburger");
+    const albumsLink = document.getElementById("albums-nav-link");
+    if (
+        !menu.contains(event.target) &&
+        !hamburger.contains(event.target) &&
+        event.target !== albumsLink
+    ) {
+        closeNav();
     }
 });
 
-// CONTACT MODAL JS
+    // ── Contact modal ─────────────────────────────────────────────────────
 const phoneInputField = document.querySelector("#phone");
     const fullPhoneInput = document.querySelector("#full_phone");
 
