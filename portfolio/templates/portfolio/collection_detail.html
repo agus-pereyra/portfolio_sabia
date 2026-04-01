@@ -90,6 +90,10 @@
     </div>
 </div>
 
+<button id="backToTopBtn" class="back-to-top-btn">
+    <span class="icon">↑</span> Volver arriba
+</button>
+
 <script>
 const mediaList = [
     {% for item in collection.media_items.all %}
@@ -227,20 +231,68 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const hash = window.location.hash;
-    if (hash && hash.startsWith('#pic-')) {
-        const targetElement = document.querySelector(hash);
+// para el salto de random-grid a la imagen específica
+const originalHash = window.location.hash;
+
+if (originalHash && (originalHash.startsWith('#pic-') || originalHash.startsWith('#media-'))) {
+    
+    // 2. APAGAMOS el "smooth scroll" general de tu CSS por un segundo 
+    // para que nuestros movimientos por código sean instantáneos.
+    document.documentElement.style.scrollBehavior = 'auto';
+    
+    // 3. ENGAÑAMOS al navegador: borramos el # de la URL sin recargar la página.
+    // Así el navegador no intenta hacer su salto bruto por defecto.
+    history.replaceState(null, null, window.location.pathname + window.location.search);
+    
+    // 4. Lo clavamos forzosamente arriba de todo
+    window.scrollTo(0, 0);
+
+    // 5. Esperamos a que 'load' se dispare (esto asegura que las fotos ya tengan
+    // su altura real y el scroll no calcule mal la distancia)
+    window.addEventListener('load', function() {
+        
+        const targetElement = document.querySelector(originalHash);
+        
         if (targetElement) {
-            // Solo nos aseguramos de que se centre bien y con suavidad
+            // Nos volvemos a asegurar de estar arriba por las dudas
+            window.scrollTo(0, 0);
+            
+            // 6. Pequeña pausa dramática de 400ms y hacemos el viaje suave
             setTimeout(() => {
                 targetElement.scrollIntoView({ 
                     behavior: 'smooth', 
                     block: 'center' 
                 });
-            }, 100);
+                
+                // 7. Limpieza: Devolvemos el # a la URL para que quede prolijo
+                // y volvemos a encender el smooth scroll de tu CSS
+                history.replaceState(null, null, window.location.pathname + window.location.search + originalHash);
+                document.documentElement.style.scrollBehavior = 'smooth';
+                
+            }, 400); 
         }
-    }
-});
+    });
+}
+const backToTopBtn = document.getElementById('backToTopBtn');
+
+if (backToTopBtn) {
+    // 1. Mostrar/Ocultar al bajar o subir
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 400) {
+            backToTopBtn.classList.add('is-visible');
+        } else {
+            backToTopBtn.classList.remove('is-visible');
+        }
+    });
+
+    // 2. Acción de subir suavemente al hacer clic
+    backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
 </script>
 {% endblock %}

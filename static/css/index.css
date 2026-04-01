@@ -26,18 +26,6 @@
 
 }
 
-@media (max-width: 1000px) {
-    .home-hero-video {
-        height: 25vh; 
-        min-height: 50px; 
-    }
-    
-    .hero-content h1 {
-        font-size: 1.5rem;
-        letter-spacing: 2px;
-    }
-}
-
 .home-hero-video video {
     position: absolute;
     top: 50%;
@@ -321,11 +309,6 @@
     font-size: 18px !important;
 }
 
-.swiper-slide-duplicate {
-    /* Mantiene la consistencia visual en los clones */
-    transition: none !important; 
-}
-
 .collection-image-wrapper {
     position: relative; /* Necesario para posicionar la capa */
     overflow: hidden;
@@ -506,9 +489,6 @@
     pointer-events: none; 
 }
 
-@media (max-width: 1024px) { .masonry-wrapper { column-count: 3; } }
-@media (max-width: 768px) { .masonry-wrapper { column-count: 2; } }
-
 .btn-minimal {
     background: transparent;
     border: 1px solid #ddd;
@@ -562,5 +542,75 @@ html {
     100% { 
         filter: brightness(1);
         transform: scale(1);
+    }
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1024px) {
+    .home-hero-video {
+        height: 25vh;
+        min-height: 200px;
+    }
+
+    .hero-content h1 {
+        font-size: 3rem;
+        letter-spacing: 0.1em;
+        line-height: 0.8em;
+    }
+
+    .hero-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .main-content {
+        padding-top: 1px;
+    }
+    .featured-collections h1 {
+        font-size: 2.5rem;
+    }
+
+    .collections-slider .swiper-slide {
+        width: 85% !important;
+        opacity: 1;
+    }
+
+    .collections-slider .collection-image-wrapper {
+        height: 450px;
+    }
+
+    .swiper-button-next, 
+    .swiper-button-prev {
+        display: none;
+        opacity: 0;
+    }
+    
+    .show-all-wrapper {
+        margin-top: 10px;
+        padding: 20px 0;
+    }
+}
+
+/* cantidad de columnas en el random grid depende de la pantalla*/
+@media (max-width: 1024px) {
+    .masonry-wrapper {
+        column-count: 3; 
+        padding: 0 10px;
+    }
+    
+    .grid-header h2 {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .masonry-wrapper {
+        column-count: 2; /* Una sola columna para máximo impacto visual */
+    }
+
+    .random-grid-section {
+        margin-top: -30px; /* Suavizamos el solapamiento */
+        border-top-left-radius: 25px;
+        border-top-right-radius: 25px;
     }
 }
