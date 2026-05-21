@@ -1,7 +1,6 @@
-superuser.txt
-/core/settings.py
 /media_original
+
 django-s3-user_accessKeys.csv
 important.txt
-.env
 .venv/
+.env
