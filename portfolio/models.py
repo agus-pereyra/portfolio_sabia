@@ -132,6 +132,7 @@ class Media(models.Model):
     
     duration = models.DurationField(help_text='HH:MM:SS', verbose_name='Duración', null=True, blank=True, )
     thumbnail = models.ImageField(upload_to='portfolio/media/thumbnails/', verbose_name='Miniatura', null=True, blank=True)
+    medium_file = models.ImageField(upload_to='portfolio/media/medium/', verbose_name='Imágen Mediana', null=True, blank=True)
 
     width = models.IntegerField(editable=False, null=True, verbose_name='Ancho', help_text='px')
     height = models.IntegerField(editable=False, null=True, verbose_name='Alto', help_text='px')
@@ -164,23 +165,29 @@ class Media(models.Model):
         if self.type == 'image' and self.image_file:
             if not self.width or not self.height:
                 img = Image.open(self.image_file)
-                self.width, self.height = img.size   
-        
-        if not self.thumbnail:
+                self.width, self.height = img.size
+
+            if not self.thumbnail or not self.medium_file:
                 img = Image.open(self.image_file)
                 if img.mode in ("RGBA", "P"):
                     img = img.convert("RGB")
-                
-                img.thumbnail((300, 300)) 
-                
-                temp_thumb = BytesIO()
-                img.save(temp_thumb, format='WEBP', quality=60) 
-                temp_thumb.seek(0)
-                
                 base_name = os.path.basename(self.image_file.name).split('.')[0]
-                img_path = f"thumb_img_{base_name}.webp"
-                
-                self.thumbnail.save(img_path, ContentFile(temp_thumb.read()), save=False)
+
+                if not self.thumbnail:
+                    thumb = img.copy()
+                    thumb.thumbnail((300, 300))
+                    temp_thumb = BytesIO()
+                    thumb.save(temp_thumb, format='WEBP', quality=60)
+                    temp_thumb.seek(0)
+                    self.thumbnail.save(f"thumb_{base_name}.webp", ContentFile(temp_thumb.read()), save=False)
+
+                if not self.medium_file:
+                    medium = img.copy()
+                    medium.thumbnail((900, 900))
+                    temp_medium = BytesIO()
+                    medium.save(temp_medium, format='WEBP', quality=82)
+                    temp_medium.seek(0)
+                    self.medium_file.save(f"medium_{base_name}.webp", ContentFile(temp_medium.read()), save=False)
 
         super().save(*args, **kwargs)
              

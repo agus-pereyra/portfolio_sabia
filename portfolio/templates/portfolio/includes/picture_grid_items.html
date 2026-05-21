@@ -1,7 +1,10 @@
 {% for item in random_media %}
     <div class="grid-item {% if forloop.counter|divisibleby:3 %}tall{% elif forloop.counter|divisibleby:7 %}wide{% endif %}">
         {% if item.type == 'image' %}
-            <img src="{{ item.image_file.url }}" alt="Visual Archive" loading="lazy">
+            <img src="{{ item.thumbnail.url }}"
+                 srcset="{{ item.thumbnail.url }} 300w{% if item.medium_file %}, {{ item.medium_file.url }} 900w{% endif %}"
+                 sizes="(max-width: 600px) 300px, 300px"
+                 alt="Visual Archive" loading="lazy" decoding="async">
             <a href="{% url 'collection_detail' item.collection.slug %}#media-{{ item.id }}" class="grid-item-overlay">
                 <span>View Details</span>
             </a>

@@ -187,8 +187,14 @@ const phoneInputField = document.querySelector("#phone");
 
     const phoneInput = window.intlTelInput(phoneInputField, {
         initialCountry: "auto", // Detecta el país por IP
-        geoIpLookup: function(success, failure) {
-            fetch("https://ipapi.co/json").then(res => res.json()).then(data => success(data.country_code));
+        geoIpLookup: function(callback) {
+            fetch("https://ipapi.co/json")
+                .then(function(res) { return res.json(); })
+                .then(function(data) { callback(data.country_code); })
+                .catch(function() {
+                    console.log("intlTelInput: GeoIP lookup failed on localhost, falling back to 'ar'.");
+                    callback("ar");
+                });
         },
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
         preferredCountries: ["ar", "us", "es"], // Países que salen primero

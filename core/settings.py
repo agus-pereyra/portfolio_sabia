@@ -153,3 +153,7 @@ STORAGES = {
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=31536000, public',
+}

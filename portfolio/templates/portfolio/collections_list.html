@@ -32,7 +32,10 @@
         <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
             <div class="collection-image-wrapper">
                 {% if col.cover %}
-                    <img src="{{ col.cover.image_file.url }}" alt="{{ col.title }}" loading="lazy" decoding="async">
+                    <img src="{% if col.cover.medium_file %}{{ col.cover.medium_file.url }}{% else %}{{ col.cover.image_file.url }}{% endif %}"
+                         srcset="{% if col.cover.medium_file %}{{ col.cover.medium_file.url }} 900w, {% endif %}{{ col.cover.image_file.url }} 2048w"
+                         sizes="(max-width: 900px) 450px, 900px"
+                         alt="{{ col.title }}" loading="lazy" decoding="async">
                 {% elif col.cover_video %}
                     <video autoplay muted loop playsinline preload="metadata" width="100%" height="100%" style="object-fit: cover;">
                         <source src="{{ col.cover_video.video_file.url }}" type="video/mp4">

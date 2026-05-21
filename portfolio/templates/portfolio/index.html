@@ -47,18 +47,28 @@
                         <a href="{% url 'collection_detail' col.slug %}" class="collection-card">
                             <div class="collection-image-wrapper">
                                 {% if col.cover_video %}
-                                    <video autoplay muted loop playsinline width="100%" height="100%" style="object-fit: cover;">
-                                        <source src="{{ col.cover_video.video_file.url }}" type="video/mp4" loading="eager">
+                                    <video autoplay muted loop playsinline width="100%" height="100%" style="object-fit: cover;"
+                                           {% if not forloop.first %}preload="none"{% endif %}>
+                                        <source src="{{ col.cover_video.video_file.url }}" type="video/mp4">
                                     </video>
                                 {% elif col.cover %}
-                                    <img src="{{ col.cover.image_file.url }}" alt="{{ col.title }}" loading="eager">
+                                    <img src="{% if col.cover.medium_file %}{{ col.cover.medium_file.url }}{% else %}{{ col.cover.image_file.url }}{% endif %}"
+                                         srcset="{% if col.cover.medium_file %}{{ col.cover.medium_file.url }} 900w, {% endif %}{{ col.cover.image_file.url }} 2048w"
+                                         sizes="(max-width: 1200px) 900px, 2048px"
+                                         alt="{{ col.title }}"
+                                         loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                                         decoding="async">
                                 {% else %}
                                     {% with first_item=col.get_first_media %}
                                         {% if first_item %}
                                             {% if first_item.type == 'image' %}
-                                                <img src="{{ first_item.image_file.url }}" alt="{{ col.title }}">
+                                                <img src="{% if first_item.medium_file %}{{ first_item.medium_file.url }}{% else %}{{ first_item.image_file.url }}{% endif %}"
+                                                     alt="{{ col.title }}"
+                                                     loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                                                     decoding="async">
                                             {% else %}
-                                                <video autoplay muted loop playsinline style="object-fit: cover;">
+                                                <video autoplay muted loop playsinline style="object-fit: cover;"
+                                                       {% if not forloop.first %}preload="none"{% endif %}>
                                                     <source src="{{ first_item.video_file.url }}" type="video/mp4">
                                                 </video>
                                             {% endif %}

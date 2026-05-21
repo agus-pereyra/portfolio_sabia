@@ -16,11 +16,11 @@
                 <span>{{ collection.captured_at|date:"M Y"|upper }}</span>
             {% endif %}
             <span>·</span>
-            {% if collection.get_photos_count > 0 %}
-                <span>{{ collection.get_photos_count }} Fotografía{{ collection.get_photos_count|pluralize:"s" }}</span>
+            {% if collection.photos_count > 0 %}
+                <span>{{ collection.photos_count }} Fotografía{{ collection.photos_count|pluralize:"s" }}</span>
             {% endif %}
-            {% if collection.get_videos_count > 0 %}
-                <span>{{ collection.get_videos_count }} Video{{ collection.get_videos_count|pluralize:"s" }}</span>
+            {% if collection.videos_count > 0 %}
+                <span>{{ collection.videos_count }} Video{{ collection.videos_count|pluralize:"s" }}</span>
             {% endif %}
             
 
@@ -51,20 +51,22 @@
     </header>
 
     <section class="photo-story-grid">
-        {% for item in collection.media_items.all %}
-            <div id="media-{{ item.id }}" 
-                class="photo-item {% if item.height > item.width %}vertical{% else %}horizontal{% endif %}" 
+        {% for item in media_items %}
+            <div id="media-{{ item.id }}"
+                class="photo-item {% if item.height > item.width %}vertical{% else %}horizontal{% endif %}"
                 onclick="openModal({{ forloop.counter0 }})">
-                
+
                 {% if item.type == 'image' %}
-                    <img src="{{ item.image_file.url }}" 
-                        alt="{{ collection.title }}" 
-                        loading="lazy" 
-                        decoding="async">
+                    <img src="{% if item.medium_file %}{{ item.medium_file.url }}{% else %}{{ item.image_file.url }}{% endif %}"
+                         alt="{{ collection.title }}"
+                         {% if item.width and item.height %}width="{{ item.width }}" height="{{ item.height }}" style="aspect-ratio: {{ item.width }} / {{ item.height }}; width: 100%; height: auto;"{% endif %}
+                         {% if forloop.counter <= 4 %}loading="eager"{% else %}loading="lazy"{% endif %}
+                         {% if forloop.first %}fetchpriority="high"{% endif %}
+                         decoding="async">
                 {% else %}
                     <div class="video-wrapper">
-                        <video autoplay muted loop playsinline preload="metadata">
-                            <source src="{{ item.video_file.url }}" type="video/mp4">
+                        <video muted loop playsinline preload="none" class="lazy-video">
+                            <source data-src="{{ item.video_file.url }}" type="video/mp4">
                         </video>
                     </div>
                 {% endif %}
@@ -97,7 +99,7 @@
 
 <script>
 const mediaList = [
-    {% for item in collection.media_items.all %}
+    {% for item in media_items %}
     {
         type: "{{ item.type }}",
         url: "{% if item.type == 'video' %}{{ item.video_file.url }}{% else %}{{ item.image_file.url }}{% endif %}",
@@ -142,13 +144,12 @@ function updateModalContent() {
         viewer.style.cursor = "default";
     } else {
         const imgElem = document.createElement("img");
-        imgElem.id = "modalImg"; 
+        imgElem.id = "modalImg";
         imgElem.src = media.url;
         imgElem.className = "modal-media";
         viewer.appendChild(imgElem);
         viewer.style.cursor = "zoom-in";
-        
-        // Inicializar zoom solo para imágenes
+
         initZoomEffect();
     }
 
@@ -274,6 +275,23 @@ if (originalHash && (originalHash.startsWith('#pic-') || originalHash.startsWith
         }
     });
 }
+const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const video = entry.target;
+            const source = video.querySelector('source[data-src]');
+            if (source) {
+                source.src = source.dataset.src;
+                video.load();
+                video.play().catch(() => {});
+            }
+            videoObserver.unobserve(video);
+        }
+    });
+}, { rootMargin: '200px 0px' });
+
+document.querySelectorAll('video.lazy-video').forEach(v => videoObserver.observe(v));
+
 const backToTopBtn = document.getElementById('backToTopBtn');
 
 if (backToTopBtn) {

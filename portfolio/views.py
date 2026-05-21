@@ -1,6 +1,7 @@
 from .models import Collection, Media
 from django.views.generic import DetailView, ListView
 from django.shortcuts import render
+from django.db.models import Count, Q, Prefetch
 import random
 
 def about(request):
@@ -32,9 +33,18 @@ class CollectionDetailView(DetailView):
     context_object_name = 'collection'
     slug_field = 'slug'
 
+    def get_queryset(self):
+        return Collection.objects.prefetch_related(
+            Prefetch('media_items', queryset=Media.objects.order_by('order')),
+            'collaborators',
+        ).annotate(
+            photos_count=Count('media_items', filter=Q(media_items__type='image')),
+            videos_count=Count('media_items', filter=Q(media_items__type='video')),
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['collections_all'] = Collection.objects.all().order_by('-captured_at')
+        context['media_items'] = list(self.object.media_items.all())
         return context
 
 class HomeView(ListView):
