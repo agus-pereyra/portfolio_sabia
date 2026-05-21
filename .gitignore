@@ -3,3 +3,4 @@ superuser.txt
 /media_original
 django-s3-user_accessKeys.csv
 important.txt
+.env
