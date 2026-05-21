@@ -52,20 +52,21 @@
 
     <section class="photo-story-grid">
         {% for item in collection.media_items.all %}
-            <div id="media-{{ item.id }}" class="photo-item media-item {% if item.type == 'video' %}video-item{% endif %}" 
-                data-type="{{ item.type }}" 
-                data-url="{% if item.type == 'video' %}{{ item.video_file.url }}{% else %}{{ item.image_file.url }}{% endif %}"
-                data-index="{{ forloop.counter0 }}"
+            <div id="media-{{ item.id }}" 
+                class="photo-item {% if item.height > item.width %}vertical{% else %}horizontal{% endif %}" 
                 onclick="openModal({{ forloop.counter0 }})">
                 
                 {% if item.type == 'image' %}
                     <img src="{{ item.image_file.url }}" 
                         alt="{{ collection.title }}" 
-                        style="cursor: pointer;">
+                        loading="lazy" 
+                        decoding="async">
                 {% else %}
-                    <video autoplay muted loop playsinline width="100%" style="display: block; cursor: pointer;">
-                        <source src="{{ item.video_file.url }}" type="video/mp4">
-                    </video>
+                    <div class="video-wrapper">
+                        <video autoplay muted loop playsinline preload="metadata">
+                            <source src="{{ item.video_file.url }}" type="video/mp4">
+                        </video>
+                    </div>
                 {% endif %}
             </div>
         {% endfor %}

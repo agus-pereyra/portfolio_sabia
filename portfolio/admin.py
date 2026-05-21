@@ -27,41 +27,44 @@ class MediaInLine(SortableInlineAdminMixin, admin.TabularInline):
     def get_preview(self, obj):
         if not obj.pk:
             return "—"
-        
+
         change_url = reverse('admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name), args=[obj.pk])
-        
-        if obj.thumbnail:
-            return format_html(
-                '<a href="{}" target="_blank" title="Editar este archivo en una pestaña nueva">'
-                '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
-                'border-radius:4px;display:block; transition: opacity 0.2s;" '
-                'onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1" />'
-                '</a>',
-                change_url,
-                obj.thumbnail.url,
-            )
-        
-        if obj.type == 'image' and obj.image_file:
-            return format_html(
-                '<a href="{}" target="_blank" title="Editar este archivo en una pestaña nueva">'
-                '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
-                'border-radius:4px;display:block; transition: opacity 0.2s;" '
-                'onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1" />'
-                '</a>',
-                change_url,
-                obj.image_file.url,
-            )
-        if obj.type == 'video' and obj.video_file:
-            return format_html(
-                '<a href="{}" target="_blank" title="Editar este archivo en una pestaña nueva">'
-                '<video src="{}" autoplay muted loop playsinline '
-                'style="width:120px;height:80px;object-fit:cover;'
-                'border-radius:4px;display:block; transition: opacity 0.2s;" '
-                'onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1"></video>'
-                '</a>',
-                change_url,
-                obj.video_file.url,
-            )
+
+        try:
+            if obj.thumbnail:
+                return format_html(
+                    '<a href="{}" target="_blank" title="Editar este archivo en una pestaña nueva">'
+                    '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
+                    'border-radius:4px;display:block; transition: opacity 0.2s;" '
+                    'onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1" />'
+                    '</a>',
+                    change_url,
+                    obj.thumbnail.url,
+                )
+
+            if obj.type == 'image' and obj.image_file:
+                return format_html(
+                    '<a href="{}" target="_blank" title="Editar este archivo en una pestaña nueva">'
+                    '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
+                    'border-radius:4px;display:block; transition: opacity 0.2s;" '
+                    'onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1" />'
+                    '</a>',
+                    change_url,
+                    obj.image_file.url,
+                )
+            if obj.type == 'video' and obj.video_file:
+                return format_html(
+                    '<a href="{}" target="_blank" title="Editar este archivo en una pestaña nueva">'
+                    '<video src="{}" autoplay muted loop playsinline '
+                    'style="width:120px;height:80px;object-fit:cover;'
+                    'border-radius:4px;display:block; transition: opacity 0.2s;" '
+                    'onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1"></video>'
+                    '</a>',
+                    change_url,
+                    obj.video_file.url,
+                )
+        except Exception:
+            return ""
         return "—"
     get_preview.short_description = 'Preview (Click para editar)'
  
@@ -110,26 +113,29 @@ class MediaAdmin(admin.ModelAdmin):
     formatted_duration.short_description = 'Duración'
 
     def get_preview(self, obj):
-        if obj.thumbnail:
-            return format_html(
-                '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
-                'border-radius:4px;display:block;" />',
-                obj.thumbnail.url,
-            )
-        
-        if obj.type == 'image' and obj.image_file:
-            return format_html(
-                '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
-                'border-radius:4px;display:block;" />',
-                obj.image_file.url,
-            )
-        if obj.type == 'video' and obj.video_file:
-            return format_html(
-                '<video src="{}" autoplay muted loop playsinline '
-                'style="width:120px;height:80px;object-fit:cover;'
-                'border-radius:4px;display:block;"></video>',
-                obj.video_file.url,
-            )
+        try:
+            if obj.thumbnail:
+                return format_html(
+                    '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
+                    'border-radius:4px;display:block;" />',
+                    obj.thumbnail.url,
+                )
+
+            if obj.type == 'image' and obj.image_file:
+                return format_html(
+                    '<img src="{}" style="width:120px;height:80px;object-fit:cover;'
+                    'border-radius:4px;display:block;" />',
+                    obj.image_file.url,
+                )
+            if obj.type == 'video' and obj.video_file:
+                return format_html(
+                    '<video src="{}" autoplay muted loop playsinline '
+                    'style="width:120px;height:80px;object-fit:cover;'
+                    'border-radius:4px;display:block;"></video>',
+                    obj.video_file.url,
+                )
+        except Exception:
+            return ""
         return "—"
     get_preview.short_description = 'Preview'
 

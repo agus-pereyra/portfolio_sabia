@@ -113,7 +113,7 @@ class Media(models.Model):
 
     image_file = ResizedImageField(
         size=[2048, 2048], # máximo width y height
-        quality=100, 
+        quality=90, 
         force_format='WEBP',
         upload_to='portfolio/media/images/', 
         verbose_name='Archivo de la Imágen',
