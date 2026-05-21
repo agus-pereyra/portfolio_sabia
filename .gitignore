@@ -4,3 +4,4 @@ superuser.txt
 django-s3-user_accessKeys.csv
 important.txt
 .env
+.venv/
