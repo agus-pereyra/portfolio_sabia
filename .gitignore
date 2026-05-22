@@ -4,5 +4,6 @@ django-s3-user_accessKeys.csv
 important.txt
 .venv/
 .env
+.env-copy
 
 db_backup.json
