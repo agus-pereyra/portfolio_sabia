@@ -16,7 +16,6 @@ MEDIA_CONTENT_TYPES = {
 
 CACHE_CONTROL = 'max-age=31536000, public'
 
-
 class Command(BaseCommand):
     help = 'Aplica Cache-Control a todos los objetos existentes en S3 (copy-in-place)'
 

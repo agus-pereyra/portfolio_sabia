@@ -187,7 +187,7 @@ class CollectionAdmin(SortableAdminMixin, SortableAdminBase, admin.ModelAdmin):
 
     def get_media_count(self, obj):
         return obj.get_media_count()
-    get_videos_count.short_description = "Archivos"
+    get_media_count.short_description = "Archivos"
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
