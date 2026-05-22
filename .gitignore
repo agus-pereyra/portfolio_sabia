@@ -5,5 +5,12 @@ important.txt
 .venv/
 .env
 .env-copy
+.env copy
 
 db_backup.json
+db.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
