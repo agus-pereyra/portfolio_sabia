@@ -21,11 +21,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = [
-    'quarters-nonprofit-considers-receives.trycloudflare.com',
-    'localhost',
-    '127.0.0.1',
-]
+allowed_hosts_env = os.getenv("ALLOWED_HOSTS", "")
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",")]
+else:
+    ALLOWED_HOSTS = [
+        'localhost',
+        '127.0.0.1'
+    ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://quarters-nonprofit-considers-receives.trycloudflare.com',
