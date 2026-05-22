@@ -25,14 +25,20 @@ allowed_hosts_env = os.getenv("ALLOWED_HOSTS", "")
 if allowed_hosts_env:
     ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",")]
 else:
-    ALLOWED_HOSTS = [
-        'localhost',
-        '127.0.0.1'
-    ]
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://quarters-nonprofit-considers-receives.trycloudflare.com',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
 ]
+
+if allowed_hosts_env:
+    for host in ALLOWED_HOSTS:
+        if host.startswith('.'):
+            CSRF_TRUSTED_ORIGINS.append(f"https://*{host}")
+        elif host not in ['localhost', '127.0.0.1']:
+            CSRF_TRUSTED_ORIGINS.append(f"https://{host}")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
