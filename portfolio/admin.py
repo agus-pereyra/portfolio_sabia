@@ -15,6 +15,16 @@ class MediaInLine(SortableInlineAdminMixin, admin.TabularInline):
     ordering = ('order',)
     classes = ('collapse', 'open')
 
+    def get_queryset(self, request):
+        return (
+            super().get_queryset(request)
+            .select_related('collection')
+            .only(
+                'id', 'type', 'order', 'thumbnail', 'image_file', 'video_file',
+                'width', 'height', 'duration', 'id_collection', 'collection_id',
+            )
+        )
+
     def formatted_duration(self, obj):
         if obj.duration:
             total_seconds = obj.duration.total_seconds()
@@ -102,6 +112,7 @@ class MediaAdmin(admin.ModelAdmin):
     search_fields = ('id_collection', 'collection__title', 'collection__slug')
     ordering = ('collection', 'order')
     readonly_fields = ('id_collection', 'width', 'height', 'formatted_duration', 'thumbnail', 'get_preview')
+    list_select_related = ('collection',)
     
     def formatted_duration(self, obj):
         if obj.duration:
@@ -146,6 +157,7 @@ class CollectionAdmin(SortableAdminMixin, SortableAdminBase, admin.ModelAdmin):
     inlines = [MediaInLine]
     filter_horizontal = ('collaborators',)
     form = CollectionForm
+    list_select_related = ('cover', 'cover_video')
 
     list_display = ('is_featured', 'featured_order', 'title', 'slug', 'get_photos_count', 'get_videos_count', 'captured_at')
     list_filter = ('is_featured', 'captured_at')
@@ -179,11 +191,12 @@ class CollectionAdmin(SortableAdminMixin, SortableAdminBase, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
+        _cover_only = ('id', 'type', 'thumbnail', 'image_file', 'video_file', 'width', 'height')
         if obj:
             if 'cover' in form.base_fields:
                 form.base_fields['cover'].queryset = Media.objects.filter(
                     collection=obj, type='image'
-                )
+                ).only(*_cover_only)
                 form.base_fields['cover'].widget.can_add_related = False
                 form.base_fields['cover'].widget.can_change_related = False
                 form.base_fields['cover'].widget.can_delete_related = False
@@ -191,11 +204,11 @@ class CollectionAdmin(SortableAdminMixin, SortableAdminBase, admin.ModelAdmin):
             if 'cover_video' in form.base_fields:
                 form.base_fields['cover_video'].queryset = Media.objects.filter(
                     collection=obj, type='video'
-                )
+                ).only(*_cover_only)
                 form.base_fields['cover_video'].widget.can_add_related = False
                 form.base_fields['cover_video'].widget.can_change_related = False
                 form.base_fields['cover_video'].widget.can_delete_related = False
-        
+
         else:
             if 'cover' in form.base_fields:
                 form.base_fields['cover'].queryset = Media.objects.none()

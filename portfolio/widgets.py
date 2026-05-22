@@ -10,17 +10,16 @@ class CoverSelectWidget(widgets.RadioSelect):
     option_template_name = 'portfolio/widgets/cover_select_option.html'
 
     def optgroups(self, name, value, attrs=None):
-        # Construimos el mapa pk→objeto desde self.choices, que sí está actualizado
-        # porque Django lo sincroniza con el queryset del field antes de renderizar.
+        # ModelChoiceIteratorValue (Django 3.1+) has no .instance attribute, so we
+        # build the pk→object map by iterating the underlying queryset directly.
+        # This also avoids a second DB hit: ModelChoiceIterator uses queryset.iterator()
+        # which bypasses _result_cache, meaning self.choices would otherwise be
+        # evaluated twice (once here, once inside super().optgroups).
         media_map = {}
-        for choice_value, _choice_label in self.choices:
-            # choice_value puede ser '' (opción vacía) o un ModelChoiceIteratorValue
-            raw = str(choice_value)
-            if not raw:
-                continue
-            # self.choices es un ModelChoiceIterator — cada value tiene .instance
-            if hasattr(choice_value, 'instance'):
-                media_map[raw] = choice_value.instance
+        qs = getattr(self.choices, 'queryset', None)
+        if qs is not None:
+            for obj in qs:
+                media_map[str(obj.pk)] = obj
 
         groups = super().optgroups(name, value, attrs)
 
@@ -28,7 +27,7 @@ class CoverSelectWidget(widgets.RadioSelect):
             for option in subgroup:
                 raw_val = str(option.get('value', ''))
                 media_obj = media_map.get(raw_val)
-                
+
                 if media_obj:
                     try:
                         if media_obj.thumbnail:
